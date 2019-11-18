@@ -1,0 +1,7 @@
+content	zotfile					    chrome/content/zotero-wikidata/
+skin	zotfile	default				chrome/skin/default/zotero-wikidata/
+
+overlay	chrome://zotero/content/zoteroPane.xul chrome://zotero-wikidata/content/overlay.xul
+
+locale zotfile de-DE chrome/locale/de-DE/
+locale zotfile en-US chrome/locale/en-US/

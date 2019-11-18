@@ -1,0 +1,9 @@
+<!ENTITY zotero-wikidata.name "Zotero WikiData">
+
+<!ENTITY zotero-wikidata.general.close "Schließen">
+
+<!ENTITY zotero-wikidata.items.title "Titel">
+<!ENTITY zotero-wikidata.items.wikidata-url "WikiData Eintrag">
+<!ENTITY zotero-wikidata.items.further-actions "Aktionen">
+
+<!ENTITY zotero-wikidata.items.create "Erstellen">

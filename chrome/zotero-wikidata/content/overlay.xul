@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://zotero-wikidata/skin/overlay.css" type="text/css"?>
+
+<!DOCTYPE overlay [
+        <!ENTITY % globaldtd SYSTEM "chrome://zotero-wikidata/locale/zotero-wikidata.dtd"> %globaldtd;
+        ]>
+
+<!-- Author: Caglar Özel -->
+
+<overlay id="zotero-wikidata-overlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script src="chrome://zotero/content/include.js"/>
+    <script src="chrome://zotero-wikidata/content/wikiData.js" type="application/javascript"/>
+
+    <menupopup id="zotero-tb-actions-popup">
+        <menuseparator/>
+        <menuitem id="zotero-wikidata-options" label="&zotero-wikidata.name;" oncommand="Zotero.WikiData.openItemsPane();"/>
+    </menupopup>
+
+    <menupopup id="menu_ToolsPopup">
+        <menuseparator/>
+        <menuitem id="zotero-wikidata-options" label="&zotero-wikidata.name;" oncommand="Zotero.WikiData.openItemsPane();"/>
+    </menupopup>
+</overlay>

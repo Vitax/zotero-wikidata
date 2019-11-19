@@ -14,17 +14,9 @@ Zotero.WikiData.SPARQLQueryDispatcher = function (endpoint) {
  * @param doi of the zotero item
  * @returns {Promise<Object | false>}
  */
-
-Zotero.WikiData.SPARQLQueryDispatcher.prototype.queryEntry = async function (doi) {
-	const queryString = `
-		select distinct ?item
-		where
-		{
-			?item ?doi ${doi}
-		}
-	`
-	const fullURL = this.enpoint + '?query=' + querySting;
+Zotero.WikiData.SPARQLQueryDispatcher.prototype.queryEntry = async function (queryString) {
+	const fullURL = this.enpoint + '?query=' + encodeURIComponent(queryString);
 	const headers = {'Accept': 'application/sparql-results+json'};
 
-	return Zotero.HTTP.request('GET', fullURL, {headers: headers})
+	return Zotero.HTTP.request("GET", fullURL, {headers: headers});
 };

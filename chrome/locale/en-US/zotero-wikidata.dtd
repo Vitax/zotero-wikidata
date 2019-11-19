@@ -1,9 +1,9 @@
-<!ENTITY zotero-wikidata.name "Zotero WikiData">
+<!ENTITY zotero.wikidata.name "Zotero WikiData">
 
-<!ENTITY zotero-wikidata.general.close "Close">
+<!ENTITY zotero.wikidata.general.close "Close">
 
-<!ENTITY zotero-wikidata.items.title "Title">
-<!ENTITY zotero-wikidata.items.wikidata-url "WikiData Entry">
-<!ENTITY zotero-wikidata.items.further-actions "Actions">
+<!ENTITY zotero.wikidata.items.title "Title">
+<!ENTITY zotero.wikidata.items.wikidata-url "WikiData Entry">
+<!ENTITY zotero.wikidata.items.further-actions "Actions">
 
-<!ENTITY zotero-wikidata.items.create "Create">
+<!ENTITY zotero.wikidata.items.create "Create">

@@ -1,0 +1,23 @@
+
+#zotero-wikidata-items-tree {
+    min-width: 400px;
+    min-height: 250px;
+    padding: 1em;
+
+    overflow: auto;
+}
+
+#zotero-wikidata-items-tree > treecols > treecol {
+    font-family: "Arial, Helvetica, sans-serif";
+    font-size: 16px;
+    padding: 0.5em;
+}
+
+#zotero-wikidata-items-children  {
+    font-family: "Arial, Helvetica, sans-serif";
+    font-size: 14px !important;
+}
+
+#zotero-wikidata-items-children > treeitem > treerow > treecell {
+    padding: 0.25em;
+}

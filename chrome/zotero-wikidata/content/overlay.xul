@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://zotero-wikidata/skin/overlay.css" type="text/css"?>
 
-<!DOCTYPE overlay [
-        <!ENTITY % globaldtd SYSTEM "chrome://zotero-wikidata/locale/zotero-wikidata.dtd"> %globaldtd;
-        ]>
+<!DOCTYPE overlay
+        [
+            <!ENTITY % globaldtd SYSTEM "chrome://zotero-wikidata/locale/zotero-wikidata.dtd"> %globaldtd;
+        ]
+>
 
 <!-- Author: Caglar Özel -->
 
@@ -15,11 +17,11 @@
 
     <menupopup id="zotero-tb-actions-popup">
         <menuseparator/>
-        <menuitem id="zotero-wikidata-options" label="&zotero-wikidata.name;" oncommand="Zotero.WikiData.openItemsPane();"/>
+        <menuitem id="zotero-wikidata-options" label="&zotero.wikidata.name;" oncommand="Zotero.WikiData.openItemsPane();"/>
     </menupopup>
 
     <menupopup id="menu_ToolsPopup">
         <menuseparator/>
-        <menuitem id="zotero-wikidata-options" label="&zotero-wikidata.name;" oncommand="Zotero.WikiData.openItemsPane();"/>
+        <menuitem id="zotero-wikidata-options" label="&zotero.wikidata.name;" oncommand="Zotero.WikiData.openItemsPane();"/>
     </menupopup>
 </overlay>

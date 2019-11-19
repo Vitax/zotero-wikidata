@@ -4,10 +4,12 @@
  */
 
 Zotero.WikiData.ItemsPane = {
-	init: Zotero.Promise.coroutine(function* () {
+	_items: null,
+
+	init: async function () {
 		this.queryDispatcher = new Zotero.WikiData.SPARQLQueryDispatcher("https://query.wikidata.org/sparql");
-		yield this._loadItems();
-	}),
+		await this._loadItems();
+	},
 
 	// /**
 	//  *
@@ -16,56 +18,85 @@ Zotero.WikiData.ItemsPane = {
 	//  */
 	_loadItems: async function () {
 		const htmlNS = 'http://www.w3.org/1999/xhtml';
-		const itemIDs = await Zotero.DB.columnQueryAsync('SELECT itemID from items');
+		const itemIDs = await Zotero.DB.columnQueryAsync(`
+				SELECT DISTINCT items.itemID 
+				FROM items
+				LEFT JOIN itemTypeFields 
+					ON items.itemTypeID = itemTypeFields.itemTypeID	
+				LEFT JOIN itemTypes 
+					ON items.itemTypeID = itemTypes.itemTypeID
+				WHERE 
+					itemTypes.typeName <> 'attachment'
+			`);
 
-		let childrenContainer = document.getElementById('zotero-wikidata-items-children');
+		let items = await Zotero.Items.getAsync(itemIDs);
+		items = items.filter(item => !item.deleted);
+		items.map(item => {
+			item.wikiDataEntry = "None";
+			let queryString = "";
 
-		// Create a treerow for each item and append it to the treechildren container
-		for (let itemID of itemIDs) {
-			let item = Zotero.Items.get(itemID);
-
-			if (item.deleted) {
+			if (item.getField("DOI")) {
+				queryString = 'SELECT ?item WHERE { ?item ?doi "' + item.getField("DOI") + '". }';
+			} else if (!item.getField("DOI") && item.getField("PMID")) {
+				queryString = 'SELECT ?item WHERE { ?item ?pmid "' + item.getField("PMID") + '". }';
+			} else {
 				return;
 			}
 
-			Zotero.debug('item title: ' + item.getField('title'));
+			this.queryDispatcher.queryEntry(queryString)
+				.then(result => {
+					Zotero.debug('wiki data entries: ' + JSON.parse(result.responseText));
+				})
+		});
 
-			let treeitem = document.createElementNS(htmlNS, 'treeitem');
-			let treerow = document.createElementNS(htmlNS, 'treerow');
+		this._items = items;
 
-			let titleCell = document.createElementNS(htmlNS, 'treecell');
-			let wikiDataURLCell = document.createElementNS(htmlNS, 'treecell');
-			let wikiDataButtonCell = document.createElementNS(htmlNS, 'treecell');
+		let tree = document.getElementById('zotero-wikidata-items-tree');
 
-			let title = document.createElement("p");
+		let treeView = {
+			rowCount: items.length,
+			getCellText: function (row, column) {
+				if (column.id === "zotero-wikidata-column-title") {
+					return items[row].getField('title')
+				}
 
-			// 		let wikiDataLink = document.createElement("a");
-			//
-			title.innerHTML = item.getField('title');
-			titleCell.appendChild(title);
-			//
-			// 		let wikiDataEntry = await this.queryDispatcher.queryEntry(item.getField('doi'));
-			// 		wikiDataLink.href = "http://thisisatesturl.com";
-			// 		wikiDataLink.textContent = "TestLink";
-			// 		wikiDataURLCell.appendChild(wikiDataLink);
-			//
-			// 		Zotero.debug(wikiDataEntry);
-			//
+				if (column.id === "zotero-wikidata-column-url") {
+					return items[row].wikiDataEntry;
+				}
+				// if (column.id === "zotero-wikidata-button") {
+				// 	let wikiDataButton = document.createElementNS(htmlNS,'button');
+				// 	wikiDataButton.setAttribute('label', 'general.create');
+				// 	wikiDataButton.addEventListener('oncommand', this.openUpTestBrowser(item));
+				// 	return wikiDataButton;
+				// }
+			},
+			setTree: function (treebox) {
+				this.treebox = treebox;
+			},
+			isContainer: function (row) {
+				return false;
+			},
+			isSeparator: function (row) {
+				return false;
+			},
+			isSorted: function () {
+				return false;
+			},
+			getLevel: function (row) {
+				return 0;
+			},
+			getImageSrc: function (row, col) {
+				return null;
+			},
+			getRowProperties: function (row, props) {
+			},
+			getCellProperties: function (row, col, props) {
+			},
+			getColumnProperties: function (colid, col, props) {
+			}
+		};
 
-			let wikiDataButton = document.createElement('button');
-			wikiDataButton.innerHTML = "&zotero-wikidata.items.create";
-			// 		wikiDataButton.addEventListener('onclick', this.openUpTestBrowser(item));
-			wikiDataButtonCell.appendChild(wikiDataButton);
-
-			treerow.appendChild(titleCell)
-			treerow.appendChild(wikiDataURLCell)
-			treerow.appendChild(wikiDataButtonCell);
-
-			treeitem.appendChild(treerow);
-
-			childrenContainer.appendChild(treeitem);
-		}
-		// Zotero.Utilities.Internal.updateHTMLInXUL()
+		tree.view = treeView;
 	},
 
 	/**
@@ -74,9 +105,10 @@ Zotero.WikiData.ItemsPane = {
 	 *
 	 * @param item { Zotero.Item }
 	 */
-	openUpTestBrowser: function (item) {
+	openUpLinkOrCreate: function (index) {
+		Zotero.debug('this is: ' + this._items[index].getField('title'));
 		const url = "https://www.wikidata.org/wiki/Special:NewItem";
 
-		window.open(url,)
+		window.openDialog(url)
 	}
 };

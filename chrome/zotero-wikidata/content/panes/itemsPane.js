@@ -63,12 +63,6 @@ Zotero.WikiData.ItemsPane = {
 				if (column.id === "zotero-wikidata-column-url") {
 					return items[row].wikiDataEntry;
 				}
-				// if (column.id === "zotero-wikidata-button") {
-				// 	let wikiDataButton = document.createElementNS(htmlNS,'button');
-				// 	wikiDataButton.setAttribute('label', 'general.create');
-				// 	wikiDataButton.addEventListener('oncommand', this.openUpTestBrowser(item));
-				// 	return wikiDataButton;
-				// }
 			},
 			setTree: function (treebox) {
 				this.treebox = treebox;
@@ -101,14 +95,42 @@ Zotero.WikiData.ItemsPane = {
 
 	/**
 	 * Opens up a browser with injected javascript to automatically fill in fields for WikiData
-	 * Should receive a Zotero.Item from the tree list
+	 * Should receive a index which will help loading the right items from the tree list
 	 *
-	 * @param item { Zotero.Item }
+	 * @param index { number }
 	 */
 	openUpLinkOrCreate: function (index) {
-		Zotero.debug('this is: ' + this._items[index].getField('title'));
-		const url = "https://www.wikidata.org/wiki/Special:NewItem";
+		const url = "https://www.wikidata.org/w/index.php?title=Special:UserLogin&returnto=Wikidata%3AMain+Page";
 
-		window.openDialog(url)
-	}
+		let chosenItem = this._items[index];
+		// let instance = Zotero.WikiData.openInBrowser(url)
+		Zotero.WikiData.openInViewer(url, (doc) => this.authenticate(doc, chosenItem));
+	},
+
+	authenticate: function (doc, chosenItem) {
+		let username = "OtherWorldyTestAccount";
+		let password = "AwesomePassword123";
+
+		doc.getElementById('wpName1').value = username;
+		doc.getElementById('wpPassword1').value = password;
+		doc.getElementById('wpLoginAttempt').click((e) => {
+			doc.addEventListener("onload", (e) => {
+				Zotero.debug('inside here: ' + doc);
+				this.redirectToNewItem(doc, chosenItem);
+			})
+		});
+
+	},
+
+	redirectToNewItem(doc, item) {
+		doc.getElementById('n-special-newitem').childNodes[0].click((e) => {
+			doc.addEventListener('onload', () => {
+				this.autocompleteFields(doc, item);
+			})
+		});
+	},
+
+	autocompleteFields: function (doc, item) {
+		doc.getElementById('ooui-php-3').value = item.getField('title');
+	},
 };

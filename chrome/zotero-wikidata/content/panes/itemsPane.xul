@@ -18,6 +18,7 @@
 
     <script src="chrome://zotero-wikidata/content/wikidata/sparql.js" type="application/javascript"/>
     <script src="chrome://zotero-wikidata/content/panes/itemsPane.js" type="application/javascript"/>
+    <script src="chrome://zotero-wikidata/content/panes/wikiData.js" type="application/javascript"/>
 
     <vbox zotero-persist="width height" flex="1">
         <hbox zotero-persist="width height" flex="1">

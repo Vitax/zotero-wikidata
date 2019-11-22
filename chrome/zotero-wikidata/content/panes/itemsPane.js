@@ -5,7 +5,8 @@
 
 Zotero.WikiData.ItemsPane = {
 	_LIMIT: 10,
-	_WAITAFTERATTEMPT: 1000, //in ms
+	_WAITAFTERATTEMPT: 500, //in ms
+	_WAITFORBUTTONCLICK: 250, //in ms
 
 	_items: null,
 	_currentLoopState: {
@@ -17,7 +18,6 @@ Zotero.WikiData.ItemsPane = {
 
 	init: async function () {
 		this.queryDispatcher = new Zotero.WikiData.SPARQLQueryDispatcher("https://query.wikidata.org/sparql");
-
 		await this._loadItems();
 	},
 
@@ -38,39 +38,13 @@ Zotero.WikiData.ItemsPane = {
             WHERE itemTypes.typeName <> 'attachment'
 		`);
 
-		let items = await Zotero.Items.getAsync(itemIDs);
-		items = items.filter(item => !item.deleted);
-		items.map(item => {
-			item.wikiDataEntry = "None";
-			let queryString = "";
-
-			if (item.getField("DOI")) {
-				queryString = 'SELECT ?item WHERE { ?item ?doi "' + item.getField("DOI") + '". }';
-			} else if (!item.getField("DOI") && item.getField("PMID")) {
-				queryString = 'SELECT ?item WHERE { ?item ?pmid "' + item.getField("PMID") + '". }';
-			} else {
-				return;
-			}
-
-			this.queryDispatcher.queryEntry(queryString)
-				.then(result => {
-					Zotero.debug('wiki data entries: ' + JSON.parse(result.responseText));
-				})
-		});
-
-		this._items = items;
-
 		let tree = document.getElementById('zotero-wikidata-items-tree');
 
 		tree.view = {
-			rowCount: items.length,
+			rowCount: 1,
 			getCellText: function (row, column) {
 				if (column.id === "zotero-wikidata-column-title") {
-					return items[row].getField('title')
-				}
-
-				if (column.id === "zotero-wikidata-column-url") {
-					return items[row].wikiDataEntry;
+					return "loading ..."
 				}
 			},
 			setTree: function (treebox) {
@@ -98,6 +72,77 @@ Zotero.WikiData.ItemsPane = {
 			getColumnProperties: function (colid, col, props) {
 			}
 		};
+
+		let items = await Zotero.Items.getAsync(itemIDs);
+		let promises = [];
+
+		items = items.filter(item => !item.deleted);
+		items.map(item => {
+			item.wikiDataEntry = "None";
+			item.wikiDataLink = "";
+			let queryString = "";
+
+			if (item.getField("DOI")) {
+				queryString = 'SELECT ?item WHERE { ?item ?doi "' + item.getField("DOI") + '". }';
+			} else if (!item.getField("DOI") && item.getField("PMID")) {
+				queryString = 'SELECT ?item WHERE { ?item ?pmid "' + item.getField("PMID") + '". }';
+			} else {
+				return;
+			}
+
+			promises.push(this.queryDispatcher.queryEntry(queryString)
+				.then(result => {
+					const data = JSON.parse(result.responseText);
+
+					if(data.results.bindings.length > 0) {
+						item.wikiDataLink = data.results.bindings[1].item.value;
+						let linkParts = item.wikiDataLink.split('/');
+						item.wikiDataEntry = linkParts[linkParts.length - 1];
+					}
+				}));
+		});
+
+		this._items = items;
+
+		await Zotero.Promise.all(promises)
+			.then(() => {
+				tree.view = {
+					rowCount: items.length,
+					getCellText: function (row, column) {
+						if (column.id === "zotero-wikidata-column-title") {
+							return items[row].getField('title')
+						}
+
+						if (column.id === "zotero-wikidata-column-url") {
+							return items[row].wikiDataEntry;
+						}
+					},
+					setTree: function (treebox) {
+						this.treebox = treebox;
+					},
+					isContainer: function (row) {
+						return false;
+					},
+					isSeparator: function (row) {
+						return false;
+					},
+					isSorted: function () {
+						return false;
+					},
+					getLevel: function (row) {
+						return 0;
+					},
+					getImageSrc: function (row, col) {
+						return null;
+					},
+					getRowProperties: function (row, props) {
+					},
+					getCellProperties: function (row, col, props) {
+					},
+					getColumnProperties: function (colid, col, props) {
+					}
+				};
+			});
 	},
 
 	/**
@@ -107,29 +152,37 @@ Zotero.WikiData.ItemsPane = {
 	 * @param index { number }
 	 */
 	openUpLinkOrCreate: function (index) {
-		this._ATTEMPTS = 0;
-		const url = "https://www.wikidata.org/w/index.php?title=Special:UserLogin&returnto=Wikidata%3AMain+Page";
-		let chosenItem = this._items[index];
+		let wikiDataItemLink = "";
+		let item = this._items[index];
+		const wikiDataLoginUrl = "https://www.wikidata.org/w/index.php?title=Special:UserLogin&returnto=Wikidata%3AMain+Page";
 
-		Zotero.WikiData.openInViewer(url, (doc) => this._checkupLoop(doc, chosenItem));
+		this._ATTEMPTS = 0;
+		if(item.wikiDataLink) {
+			Zotero.WikiData.openInViewer(item.wikiDataLink, null);
+		} else {
+			Zotero.WikiData.openInViewer(wikiDataLoginUrl, (doc) => this._checkupLoop(doc, item));
+		}
 	},
 
-	_checkupLoop: function (doc, chosenItem) {
+	_checkupLoop: function (doc, item) {
 		if (this._ATTEMPTS !== this._LIMIT) {
-			Zotero.debug('inside checkup loop. Attempts: ' + this._ATTEMPTS);
 			this._checkCurrentState(doc);
 
 			setTimeout(() => {
 				if (this._currentLoopState.login) {
-					this._authenticate(doc, chosenItem);
+					this._authenticate(doc, item);
 				}
 
 				if (this._currentLoopState.mainPage) {
-					this._redirectToNewItem(doc, chosenItem)
+					this._redirectToNewItem(doc, item)
 				}
 
 				if (this._currentLoopState.createItem) {
-					this._createItem(doc, chosenItem);
+					this._createItem(doc, item);
+				}
+
+				if (this._currentLoopState.popuplateItem) {
+					this._populateItem(doc, item);
 				}
 			}, this._WAITAFTERATTEMPT);
 
@@ -141,8 +194,6 @@ Zotero.WikiData.ItemsPane = {
 
 	_checkCurrentState: function (doc) {
 		const currentUrl = doc.location.href;
-		Zotero.debug('checking current state: ' + JSON.stringify(this._currentLoopState));
-		Zotero.debug('current url: ' + currentUrl);
 
 		this._currentLoopState = {
 			login: false,
@@ -176,55 +227,85 @@ Zotero.WikiData.ItemsPane = {
 		});
 	},
 
-	_restartAttempts: function (doc, chosenItem) {
+	_restartAttempts: function (doc, item) {
 		// if (restart event from confirmationDialog) {
 		// set: this._ATTEMPTS = 0;
-		// call: this._checkupLoop(doc, chosenItem);
+		// call: this._checkupLoop(doc, item);
 		// }
 		// else {
 		// call: this._done(doc)
 		// }
 	},
 
-	_authenticate: function (doc, chosenItem) {
+	_authenticate: function (doc, item) {
+		// Get these dynamically later on
 		let username = "OtherWorldyTestAccount";
 		let password = "AwesomePassword123";
+
 		let usernameField = doc.getElementById('wpName1');
 		let passwordField = doc.getElementById('wpPassword1');
+		let loginButtonElement = doc.getElementById('wpLoginAttempt')
 
-		if (usernameField.value.length === 0) {
+		if (usernameField && usernameField.value.length === 0) {
 			usernameField = username;
 		}
 
-		Zotero.debug("Password field value: " + passwordField.length);
-
-		if (passwordField.value.length === 0) {
+		if (passwordField && passwordField.value.length === 0) {
 			passwordField.value = password;
 		}
 
-		if (passwordField.value.length !== 0) {
-			setTimeout(() => {
-				doc.getElementById('wpLoginAttempt').click();
-			}, 500);
-		} else {
-			this._checkupLoop(doc, chosenItem);
-		}
+		setTimeout(() => {
+			if (loginButtonElement && passwordField.value.length !== 0) {
+				loginButtonElement.click();
+			} else {
+				this._checkupLoop(doc, item);
+			}
+		}, this._WAITFORBUTTONCLICK);
 	},
 
-	_redirectToNewItem: function (doc, chosenItem) {
-		doc.getElementById('n-special-newitem').childNodes[0].click();
+	_redirectToNewItem: function (doc, item) {
+		let redirectToCreateItemElement = doc.getElementById('n-special-newitem').childNodes[0];
 
-		this._checkupLoop(doc, chosenItem);
+		if (redirectToCreateItemElement) {
+			redirectToCreateItemElement.click();
+		} else {
+			this._checkupLoop(doc, item);
+		}
+
 	},
 
 	_createItem: function (doc, item) {
-		doc.getElementById('ooui-php-3').value = item.getField('title');
+		let aliases = "";
+		let titleField = doc.getElementById('ooui-php-3');
+		let descriptionField = doc.getElementById('ooui-php-4');
+		let aliasesField = doc.getElementById('ooui-php-5');
+		let createItemButton = doc.getElementById('wb-newentity-submit').childNodes[0];
 
-		this._checkupLoop(doc, chosenItem);
+		// prepare aliases using the tags from zotero
+		item.getTags().forEach((tag, index) => {
+			if(index !== item.getTags().length) {
+				aliases = aliases.concat(tag.tag, ', ');
+			} else {
+				aliases = aliases.concat(tag.tag, '');
+			}
+		});
+
+		titleField.value = item.getField('title');
+		descriptionField =
+		aliasesField.value = aliases;
+
+		setTimeout(() => {
+			if (createItemButton &&
+				(titleField && titleField.value.length !== 0) &&
+				(aliasesField && aliasesField.value.length !== 0)) {
+				createItemButton.click();
+			} else {
+				this._checkupLoop(doc, item);
+			}
+		}, this._WAITFORBUTTONCLICK);
 	},
 
 	_populateItem: function (doc, item) {
-
-		this._checkupLoop(doc, chosenItem);
+		this._checkupLoop(doc, item);
 	}
 };

@@ -1,17 +1,16 @@
 
 #zotero-wikidata-items-tree {
-    min-width: 640px;
-    min-height: 480px;
-
-    overflow: auto;
+    width: 640px;
+    height: 480px;
+    padding: 0.25em;
 }
 
 #zotero-wikidata-items-tree > treecols > treecol {
-    font-family: "Arial, Helvetica, sans-serif";
+    font-family: Lucida Grande, Lucida Sans Unicode, Lucida Sans, Geneva, -apple-system, sans-serif !important;
     font-size: 16px;
 }
 
 #zotero-wikidata-items-children  {
-    font-family: "Arial, Helvetica, sans-serif";
+    font-family: Lucida Grande, Lucida Sans Unicode, Lucida Sans, Geneva, -apple-system, sans-serif !important;
     font-size: 14px !important;
 }

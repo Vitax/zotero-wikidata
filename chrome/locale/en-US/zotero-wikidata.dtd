@@ -7,6 +7,11 @@
 <!ENTITY zotero.wikidata.items.further-actions "Actions">
 
 <!ENTITY zotero.wikidata.items.create "Create">
+<!ENTITY zotero.wikidata.items.loading "Loading...">
+
+<!ENTITY zotero.wikidata.items.type.article "Journal article released by ">
+<!ENTITY zotero.wikidata.items.type.book "Book released by ">
+<!ENTITY zotero.wikidata.items.type.website "Article from the Internet by ">
 
 <!ENTITY zotero.wikidata.state.stuck "It seems like I am stuck and can't do anything anymore.">
 <!ENTITY zotero.wikidata.state.continue "Try again">

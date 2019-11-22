@@ -1,11 +1,9 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://zotero-wikidata/skin/overlay.css" type="text/css"?>
 
-<!DOCTYPE overlay
-    [
+<!DOCTYPE dialog [
         <!ENTITY % globaldtd SYSTEM "chrome://zotero-wikidata/locale/zotero-wikidata.dtd"> %globaldtd;
-    ]
->
+        ]>
 
 <!-- Author: Caglar Özel -->
 

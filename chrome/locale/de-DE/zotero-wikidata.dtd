@@ -7,3 +7,7 @@
 <!ENTITY zotero.wikidata.items.further-actions "Aktionen">
 
 <!ENTITY zotero.wikidata.items.create "Erstellen">
+
+<!ENTITY zotero.wikidata.state.stuck "Es sieht so aus als ob ich nichts mehr zu tun hätte.">
+<!ENTITY zotero.wikidata.state.continue "Nochmal versuchen">
+<!ENTITY zotero.wikidata.state.Stop "Stoppen">

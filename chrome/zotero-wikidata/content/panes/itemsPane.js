@@ -106,6 +106,7 @@ Zotero.WikiData.ItemsPane = {
 
 		await Zotero.Promise.all(promises)
 			.then(() => {
+				tree.view = null;
 				tree.view = {
 					rowCount: items.length,
 					getCellText: function (row, column) {

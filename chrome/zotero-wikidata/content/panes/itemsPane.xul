@@ -12,7 +12,7 @@
         buttons="cancel"
         onload="Zotero.WikiData.ItemsPane.init()">
 
-    <script src="chrome://zotero/content/include.js"/>
+    <script src="chrome://zotero/content/include.js" type="application/javascript"/>
 
     <script src="chrome://zotero-wikidata/content/wikidata/sparql.js" type="application/javascript"/>
     <script src="chrome://zotero-wikidata/content/panes/itemsPane.js" type="application/javascript"/>

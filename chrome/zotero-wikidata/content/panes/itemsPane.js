@@ -169,42 +169,42 @@ Zotero.WikiData.ItemsPane = {
 		const wikiDataLoginUrl = "https://www.wikidata.org/w/index.php?title=Special:UserLogin&returnto=Wikidata%3AMain+Page";
 		this._ATTEMPTS = 0;
 
-		if (item.wikiDataLink) {
-			Zotero.WikiData.openInViewer(item.wikiDataLink, null);
-		} else {
-			Zotero.WikiData.openInViewer(wikiDataLoginUrl, (doc) => this._checkupLoop(doc, item))
-		}
+		// if (item.wikiDataLink) {
+		// 	Zotero.WikiData.openInViewer(item.wikiDataLink, null);
+		// } else {
+		// 	Zotero.WikiData.openInViewer(wikiDataLoginUrl, (doc) => this._checkupLoop(doc, item))
+		// }
 
-		// let testLink = "https://www.wikidata.org/wiki/Q76342806";
-		// Zotero.WikiData.openInViewer(testLink, (doc) => this._checkupLoop(doc, item));
+		let testLink = "https://www.wikidata.org/wiki/Q76342806";
+		Zotero.WikiData.openInViewer(testLink, (doc) => this._checkupLoop(doc, item));
 	},
 
 	_checkupLoop: function (doc, item) {
 		if (this._ATTEMPTS !== this._LIMIT) {
 			this._checkCurrentState(doc);
 
-			// setTimeout(() => {
-			if (this._currentLoopState.login) {
-				this._authenticate(doc, item);
-			}
+			setTimeout(() => {
+				if (this._currentLoopState.login) {
+					this._authenticate(doc, item);
+				}
 
-		// 		if (this._currentLoopState.mainPage) {
-		// 			this._redirectToNewItem(doc, item)
-		// 		}
-		//
-		// 		if (this._currentLoopState.createItem) {
-		// 			this._createItem(doc, item);
-		// 		}
-		//
-		// 		if (this._currentLoopState.popuplateItem) {
-		// 			this._populateItem(doc, item);
-		// 		}
-		// 	}, this._WAITAFTERATTEMPT);
-		//
-		// 	this._ATTEMPTS++;
-		// } else {
-		// 	// this._restartAttempts();
+				if (this._currentLoopState.mainPage) {
+					this._redirectToNewItem(doc, item)
+				}
+
+				if (this._currentLoopState.createItem) {
+					this._createItem(doc, item);
+				}
+
+				if (this._currentLoopState.popuplateItem) {
+					this._populateItem(doc, item);
+				}
+			}, this._WAITAFTERATTEMPT);
+			this._ATTEMPTS++;
+		} else {
+			this._restartAttempts();
 		}
+
 	},
 
 	_checkCurrentState: function (doc) {
@@ -234,6 +234,11 @@ Zotero.WikiData.ItemsPane = {
 		}
 	},
 
+	/**
+	 * Remove all added events from the doc
+	 * @param doc
+	 * @private
+	 */
 	_done: function (doc) {
 		doc.removeEventListener('load', () => {
 		});
@@ -280,16 +285,14 @@ Zotero.WikiData.ItemsPane = {
 	 * @param key {keyCode | key} key which should be triggered
 	 * @private
 	 */
-	_triggerKeyEvents: function (element, key) {
-		let event = new Event('keypress');
-
-		event.which = key;
-		element.trigger(event);
+	_triggerKeyboardEvent: function (element, key) {
+		let keyboardEvent = new KeyboardEvent('keypress', {'key': key});
+		element.dispatchEvent(keyboardEvent);
 	},
 
 	_writeText: function (string, element) {
 		for (let char of string) {
-			setTimeout(this._triggerKeyEvents(element, char.charCodeAt(0)), 100);
+			setTimeout(this._triggerKeyboardEvent(element, char), 50);
 		}
 	},
 
@@ -311,8 +314,6 @@ Zotero.WikiData.ItemsPane = {
 		let usernameField = doc.getElementById('wpName1');
 		let passwordField = doc.getElementById('wpPassword1');
 		let loginButtonElement = doc.getElementById('wpLoginAttempt')
-
-		Zotero.debug(JSON.stringify(usernameField));
 
 		if (usernameField && usernameField.value.length === 0) {
 			usernameField = username;
@@ -374,45 +375,69 @@ Zotero.WikiData.ItemsPane = {
 	 */
 	_triggerAddStatementEvent: function (doc) {
 		const content = doc.getElementById('bodyContent');
-		Zotero.debug(JSON.stringify(content));
-		const addStatementField = Zotero.Utilities.xpath(content, '//div[@class="wikibase-statementgrouplistview"]');
-		Zotero.debug(JSON.stringify(addStatementField))
-		const addStatementFieldIcon = Zotero.Utilities.xpath(addStatementField, '/div[@class="wikibase-addtoolbar' +
-			' wikibase-toolbar-item wikibase-toolbar wikibase-addtoolbar-container' +
-			' wikibase-toolbar-container"]/span/a');
-		Zotero.debug(JSON.stringify(addStatementFieldIcon))
-		const statementListView = Zotero.Utilities.xpath(addStatementField, '/div[@class="wikibase-listview"]');
+		const addStatementField = Zotero.Utilities.xpath(content,
+			'//div[@class="wikibase-statementgrouplistview"]' +
+			'/div[@class="wikibase-addtoolbar wikibase-toolbar-item wikibase-toolbar ' +
+			'wikibase-addtoolbar-container wikibase-toolbar-container"]' +
+			'/span' +
+			'/a'
+		);
 
-		addStatementFieldIcon.click();
+		addStatementField[0].click();
 
-		return statementListView;
+		// wait for event to be triggered
+		setTimeout(() => {}, 250);
+
+		const statementListView = Zotero.Utilities.xpath(content,
+			'//div[@class="wikibase-statementgrouplistview"]' +
+			'/div[@class="wikibase-listview"]');
+		return statementListView[0];
 	},
 
-	_addInstanceOfProperty: function (statementListView) {
-		const propertyField = Zotero.Utilities.xpath(statementListView, '//div[@class="wikibase-snakview-property-container"]' +
+	_addInstanceOfProperty: function (statementListEl) {
+		const propertyInputField = Zotero.Utilities.xpath(statementListEl,
+			'//div[@class="wikibase-snakview-property-container"]' +
 			'/div[@class="wikibase-snakview-property"]' +
-			'/input[@class="ui-suggester-input ui-entityselector-input ui-entityselector-input-recognized"]')
+			'/input');
 
-		this._writeText("instance of", propertyField);
+		Zotero.debug('inner html: ' + statementListEl.innerHTML);
+		Zotero.debug('property field: ' + propertyInputField);
+		Zotero.debug('property field array 0: ' + propertyInputField[0]);
+
+		// write text instance of into the property field
 		setTimeout(() => {
-			this._triggerKeyEvents(propertyField, this._RETURNKEYCODE); // press return
+			this._writeText("instance of", propertyInputField);
 		}, 250);
 
-		const propertyValue = Zotero.Utilities.xpath(statementListView, '//div[@class="wikibase-snakview-body"]' +
-			'/div[@class="valueview-expert-wikibaseitem-input valueview-input ' +
-			'ui-suggester-input ui-entityselector-input ui-entityselector-input-recognized"]');
+		// confirm it by pressing return on the given element
+		setTimeout(() => {
+			this._triggerKeyboardEvent(propertyInputField, this._RETURNKEYCODE); // press return
+		}, 250);
 
-		this._writeText("scholarly article");
+		const propertyValue = Zotero.Utilities.xpath(statementListEl,
+			'//div[@class="wikibase-snakview-body"]' +
+			'/div[@class="wikibase-snakview-value wikibase-snakview-variation-valuesnak"]' +
+			'/div' +
+			'/div' +
+			'/textarea'
+		);
+
+		Zotero.debug('property value: ' + propertyValue);
+		Zotero.debug('property value array 0: ' + propertyValue[0]);
+
+		setTimeout(() => {
+			this._writeText("scholarly article", propertyValue);
+		}, 250);
+
 		// setTimeout(() => {
 		// 	this._triggerKeyEvents(propertyField, this._RETURNKEYCODE); // press return
 		// }, 250);
 	},
 
 	_populateItem: function (doc, item) {
-		Zotero.debug('wiki entry dom: ' + JSON.stringify(doc));
-		const statementListView = this._triggerAddStatementEvent(doc);
-		this._addInstanceOfProperty(statementListView);
+		const statementListEl = this._triggerAddStatementEvent(doc);
+		this._addInstanceOfProperty(statementListEl);
 
-		setTimeout(this._checkupLoop(doc, item), 250);
+		// setTimeout(this._checkupLoop(doc, item), 250);
 	}
 };

@@ -8,6 +8,9 @@ Zotero.WikiData.ItemsPane = {
 	_WAITAFTERATTEMPT: 500, //in ms
 	_WAITFORBUTTONCLICK: 250, //in ms
 
+	_RETURNKEYCODE: 13,
+	_DOWNARROWCODE: 40,
+
 	_items: null,
 	_currentLoopState: {
 		login: false,
@@ -21,11 +24,11 @@ Zotero.WikiData.ItemsPane = {
 		await this._loadItems();
 	},
 
-	// /**
-	//  *
-	//  * @returns {Promise<void>}
-	//  * @private
-	//  */
+	/**
+	 *
+	 * @returns {Promise<void>}
+	 * @private
+	 */
 	_loadItems: async function () {
 		const htmlNS = 'http://www.w3.org/1999/xhtml';
 		const itemIDs = await Zotero.DB.columnQueryAsync(`
@@ -36,6 +39,7 @@ Zotero.WikiData.ItemsPane = {
                      LEFT JOIN itemTypes
                                ON items.itemTypeID = itemTypes.itemTypeID
             WHERE itemTypes.typeName <> 'attachment'
+              AND itemTypes.typeName <> 'note'
 		`);
 
 		let tree = document.getElementById('zotero-wikidata-items-tree');
@@ -83,9 +87,16 @@ Zotero.WikiData.ItemsPane = {
 			let queryString = "";
 
 			if (item.getField("DOI")) {
-				queryString = 'SELECT ?item WHERE { ?item ?doi "' + item.getField("DOI") + '". }';
+				queryString = `
+				SELECT
+					?item 
+				WHERE
+					{ 
+						?item ?doi  "${item.getField("DOI").toUpperCase()}".
+					}
+				`;
 			} else if (!item.getField("DOI") && item.getField("PMID")) {
-				queryString = 'SELECT ?item WHERE { ?item ?pmid "' + item.getField("PMID") + '". }';
+				queryString = 'SELECT ?item WHERE { ?item ?pmid "' + item.getField("PMID").toUpperCase() + '". }';
 			} else {
 				return;
 			}
@@ -94,7 +105,7 @@ Zotero.WikiData.ItemsPane = {
 				.then(result => {
 					const data = JSON.parse(result.responseText);
 
-					if(data.results.bindings.length > 0) {
+					if (data.results.bindings.length > 0) {
 						item.wikiDataLink = data.results.bindings[1].item.value;
 						let linkParts = item.wikiDataLink.split('/');
 						item.wikiDataEntry = linkParts[linkParts.length - 1];
@@ -156,40 +167,43 @@ Zotero.WikiData.ItemsPane = {
 		let wikiDataItemLink = "";
 		let item = this._items[index];
 		const wikiDataLoginUrl = "https://www.wikidata.org/w/index.php?title=Special:UserLogin&returnto=Wikidata%3AMain+Page";
-
 		this._ATTEMPTS = 0;
-		if(item.wikiDataLink) {
+
+		if (item.wikiDataLink) {
 			Zotero.WikiData.openInViewer(item.wikiDataLink, null);
 		} else {
-			Zotero.WikiData.openInViewer(wikiDataLoginUrl, (doc) => this._checkupLoop(doc, item));
+			Zotero.WikiData.openInViewer(wikiDataLoginUrl, (doc) => this._checkupLoop(doc, item))
 		}
+
+		// let testLink = "https://www.wikidata.org/wiki/Q76342806";
+		// Zotero.WikiData.openInViewer(testLink, (doc) => this._checkupLoop(doc, item));
 	},
 
 	_checkupLoop: function (doc, item) {
 		if (this._ATTEMPTS !== this._LIMIT) {
 			this._checkCurrentState(doc);
 
-			setTimeout(() => {
-				if (this._currentLoopState.login) {
-					this._authenticate(doc, item);
-				}
+			// setTimeout(() => {
+			if (this._currentLoopState.login) {
+				this._authenticate(doc, item);
+			}
 
-				if (this._currentLoopState.mainPage) {
-					this._redirectToNewItem(doc, item)
-				}
-
-				if (this._currentLoopState.createItem) {
-					this._createItem(doc, item);
-				}
-
-				if (this._currentLoopState.popuplateItem) {
-					this._populateItem(doc, item);
-				}
-			}, this._WAITAFTERATTEMPT);
-
-			this._ATTEMPTS++;
-		} else {
-			// this._restartAttempts();
+		// 		if (this._currentLoopState.mainPage) {
+		// 			this._redirectToNewItem(doc, item)
+		// 		}
+		//
+		// 		if (this._currentLoopState.createItem) {
+		// 			this._createItem(doc, item);
+		// 		}
+		//
+		// 		if (this._currentLoopState.popuplateItem) {
+		// 			this._populateItem(doc, item);
+		// 		}
+		// 	}, this._WAITAFTERATTEMPT);
+		//
+		// 	this._ATTEMPTS++;
+		// } else {
+		// 	// this._restartAttempts();
 		}
 	},
 
@@ -215,7 +229,7 @@ Zotero.WikiData.ItemsPane = {
 			this._currentLoopState.createItem = true;
 		}
 
-		if (currentUrl === "") {
+		if (currentUrl.includes("https://www.wikidata.org/wiki/Q")) {
 			this._currentLoopState.popuplateItem = true;
 		}
 	},
@@ -226,6 +240,57 @@ Zotero.WikiData.ItemsPane = {
 
 		doc.removeEventListener('pageshow', () => {
 		});
+	},
+
+	_getDescriptionString(item) {
+		if (item.itemType === 'journalArticle') {
+			return Zotero.getString('zotero.wikidata.items.type.article') + item.date;
+		}
+
+		if (item.itemType === 'book') {
+			return Zotero.getString('zotero.wikidata.items.type.book') + item.date;
+		}
+
+		return "Item release on " + item.date;
+	},
+
+	/**
+	 *
+	 * @param item
+	 * @returns {*}
+	 * @private
+	 */
+	_getAliasesString(item) {
+		let aliases = "";
+		let numOfTags = 5;
+		for (let i = 0; i < 5; i++) {
+			if (i < numOfTags - 1) {
+				aliases = aliases.concat(item.getTags()[i].tag, ", ");
+			} else {
+				aliases = aliases.concat(item.getTags()[i].tag, "");
+			}
+		}
+
+		return aliases;
+	},
+
+	/**
+	 * Trigger an artificial key event on an element
+	 * @param element {HTMLElement} Element from the dom
+	 * @param key {keyCode | key} key which should be triggered
+	 * @private
+	 */
+	_triggerKeyEvents: function (element, key) {
+		let event = new Event('keypress');
+
+		event.which = key;
+		element.trigger(event);
+	},
+
+	_writeText: function (string, element) {
+		for (let char of string) {
+			setTimeout(this._triggerKeyEvents(element, char.charCodeAt(0)), 100);
+		}
 	},
 
 	_restartAttempts: function (doc, item) {
@@ -246,6 +311,8 @@ Zotero.WikiData.ItemsPane = {
 		let usernameField = doc.getElementById('wpName1');
 		let passwordField = doc.getElementById('wpPassword1');
 		let loginButtonElement = doc.getElementById('wpLoginAttempt')
+
+		Zotero.debug(JSON.stringify(usernameField));
 
 		if (usernameField && usernameField.value.length === 0) {
 			usernameField = username;
@@ -283,21 +350,14 @@ Zotero.WikiData.ItemsPane = {
 		let createItemButton = doc.getElementById('wb-newentity-submit').childNodes[0];
 
 		// prepare aliases using the tags from zotero
-		item.getTags().forEach((tag, index) => {
-			if(index !== item.getTags().length) {
-				aliases = aliases.concat(tag.tag, ', ');
-			} else {
-				aliases = aliases.concat(tag.tag, '');
-			}
-		});
-
 		titleField.value = item.getField('title');
-		descriptionField =
-		aliasesField.value = aliases;
+		descriptionField.value = this._getDescriptionString(item);
+		aliasesField.value = this._getAliasesString(item);
 
 		setTimeout(() => {
 			if (createItemButton &&
 				(titleField && titleField.value.length !== 0) &&
+				(descriptionField && descriptionField.value.length !== 0) &&
 				(aliasesField && aliasesField.value.length !== 0)) {
 				createItemButton.click();
 			} else {
@@ -306,7 +366,53 @@ Zotero.WikiData.ItemsPane = {
 		}, this._WAITFORBUTTONCLICK);
 	},
 
+	/**
+	 *
+	 * @param doc {HTMLDocument}
+	 * @returns {HTMLElement}
+	 * @private
+	 */
+	_triggerAddStatementEvent: function (doc) {
+		const content = doc.getElementById('bodyContent');
+		Zotero.debug(JSON.stringify(content));
+		const addStatementField = Zotero.Utilities.xpath(content, '//div[@class="wikibase-statementgrouplistview"]');
+		Zotero.debug(JSON.stringify(addStatementField))
+		const addStatementFieldIcon = Zotero.Utilities.xpath(addStatementField, '/div[@class="wikibase-addtoolbar' +
+			' wikibase-toolbar-item wikibase-toolbar wikibase-addtoolbar-container' +
+			' wikibase-toolbar-container"]/span/a');
+		Zotero.debug(JSON.stringify(addStatementFieldIcon))
+		const statementListView = Zotero.Utilities.xpath(addStatementField, '/div[@class="wikibase-listview"]');
+
+		addStatementFieldIcon.click();
+
+		return statementListView;
+	},
+
+	_addInstanceOfProperty: function (statementListView) {
+		const propertyField = Zotero.Utilities.xpath(statementListView, '//div[@class="wikibase-snakview-property-container"]' +
+			'/div[@class="wikibase-snakview-property"]' +
+			'/input[@class="ui-suggester-input ui-entityselector-input ui-entityselector-input-recognized"]')
+
+		this._writeText("instance of", propertyField);
+		setTimeout(() => {
+			this._triggerKeyEvents(propertyField, this._RETURNKEYCODE); // press return
+		}, 250);
+
+		const propertyValue = Zotero.Utilities.xpath(statementListView, '//div[@class="wikibase-snakview-body"]' +
+			'/div[@class="valueview-expert-wikibaseitem-input valueview-input ' +
+			'ui-suggester-input ui-entityselector-input ui-entityselector-input-recognized"]');
+
+		this._writeText("scholarly article");
+		// setTimeout(() => {
+		// 	this._triggerKeyEvents(propertyField, this._RETURNKEYCODE); // press return
+		// }, 250);
+	},
+
 	_populateItem: function (doc, item) {
-		this._checkupLoop(doc, item);
+		Zotero.debug('wiki entry dom: ' + JSON.stringify(doc));
+		const statementListView = this._triggerAddStatementEvent(doc);
+		this._addInstanceOfProperty(statementListView);
+
+		setTimeout(this._checkupLoop(doc, item), 250);
 	}
 };

@@ -9,10 +9,11 @@
 <!ENTITY zotero.wikidata.items.create "Create">
 <!ENTITY zotero.wikidata.items.loading "Loading...">
 
-<!ENTITY zotero.wikidata.items.type.article "Journal article released by ">
-<!ENTITY zotero.wikidata.items.type.book "Book released by ">
-<!ENTITY zotero.wikidata.items.type.website "Article from the Internet by ">
-
 <!ENTITY zotero.wikidata.state.stuck "It seems like I am stuck and can't do anything anymore.">
 <!ENTITY zotero.wikidata.state.continue "Try again">
 <!ENTITY zotero.wikidata.state.stop "Stop">
+
+<!-- Entities should always be english since the default entry in WikiData will be on english ! -->
+<!ENTITY zotero.wikidata.items.type.article "Journal article released on ">
+<!ENTITY zotero.wikidata.items.type.book "Book released on ">
+<!ENTITY zotero.wikidata.items.type.website "Article from the Internet from ">

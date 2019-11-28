@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?xml-stylesheet href="chrome://zotero-wikidata/skin/overlay.css" type="text/css"?>
+
+<!DOCTYPE window [
+        <!ENTITY % globaldtd SYSTEM "chrome://zotero-wikidata/locale/zotero-wikidata.dtd"> %globaldtd;
+        ]>
+
+
+<window id="zotero-wikidata-information"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        onload="Zotero.WikiData.ItemPrefab.init()"
+        width="720" height="1080"
+        persist="screenX screenY width height sizemode">
+
+    <script src="chrome://zotero/content/include.js"/>
+    <script src="chrome://zotero-wikidata/content/itemPrefab/itemPrefab.js" type="application/javascript"/>
+
+    <vbox id="zotero-wikidata-item-content">
+        <groupbox>
+            <description value="&zotero.wikidata.explanation1;"/>
+            <description value="&zotero.wikidata.explanation2;"/>
+        </groupbox>
+        <groupbox flex="1">
+            <hbox>
+                <label value="&zotero.wikidata.items.label;"/>
+                <textbox id="item-title" flex="1"/>
+            </hbox>
+
+            <hbox>
+                <label value="&zotero.wikidata.items.description;"/>
+                <textbox id="item-description" flex="1"/>
+            </hbox>
+
+            <hbox>
+                <label value="&zotero.wikidata.items.aliases;"/>
+                <textbox id="item-aliases" flex="1"/>
+            </hbox>
+
+            <hbox>
+                <label value="&zotero.wikidata.items.instance-of;"/>
+                <textbox id="item-alias" flex="1"/>
+            </hbox>
+
+            <hbox>
+                <label value="DOI: "/>
+                <textbox id="item-doi" flex="1"/>
+            </hbox>
+
+            <hbox>
+                <label value="PMID: "/>
+                <textbox id="item-pmid" flex="1"/>
+            </hbox>
+
+            <vbox id="authors-container">
+            </vbox>
+        </groupbox>
+        <hbox>
+            <button label="&zotero.wikidata.general.close;" oncommand="window.close();"/>
+        </hbox>
+    </vbox>
+</window>

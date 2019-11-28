@@ -1,5 +1,7 @@
 <!ENTITY zotero.wikidata.name "Zotero WikiData">
 
+<!ENTITY zotero.wikidata.explanation1 "This window prepared all information you will need to create a WikiData entry.">
+<!ENTITY zotero.wikidata.explanation2 "Please be aware that this data may contain faults. Therefore double check what you are entering into WikiData.">
 <!ENTITY zotero.wikidata.general.close "Close">
 
 <!ENTITY zotero.wikidata.items.title "Title">
@@ -17,3 +19,9 @@
 <!ENTITY zotero.wikidata.items.type.article "Journal article released on ">
 <!ENTITY zotero.wikidata.items.type.book "Book released on ">
 <!ENTITY zotero.wikidata.items.type.website "Article from the Internet from ">
+
+<!ENTITY zotero.wikidata.items.label "Label & Title: ">
+<!ENTITY zotero.wikidata.items.description "Description: ">
+<!ENTITY zotero.wikidata.items.aliases "Aliases: ">
+<!ENTITY zotero.wikidata.items.instance-of "Instance of: ">
+

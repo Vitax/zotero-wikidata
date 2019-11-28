@@ -5,12 +5,10 @@
 
 Zotero.WikiData.ItemsPane = {
 	_LIMIT: 10,
+	_WAITAFTERINPUT: 250, //in ms
 	_WAITAFTERATTEMPT: 500, //in ms
-	_WAITFORBUTTONCLICK: 250, //in ms
 
-	_RETURNKEYCODE: 13,
-	_DOWNARROWCODE: 40,
-
+	_missingAnything: false,
 	_items: null,
 	_currentLoopState: {
 		login: false,
@@ -22,6 +20,10 @@ Zotero.WikiData.ItemsPane = {
 	init: async function () {
 		this.queryDispatcher = new Zotero.WikiData.SPARQLQueryDispatcher("https://query.wikidata.org/sparql");
 		await this._loadItems();
+	},
+
+	_sleep: function (timeout) {
+		return new Promise(resolve => setTimeout(resolve, timeout));
 	},
 
 	/**
@@ -118,6 +120,7 @@ Zotero.WikiData.ItemsPane = {
 		await Zotero.Promise.all(promises)
 			.then(() => {
 				tree.view = null;
+
 				tree.view = {
 					rowCount: items.length,
 					getCellText: function (row, column) {
@@ -166,45 +169,57 @@ Zotero.WikiData.ItemsPane = {
 	openUpLinkOrCreate: function (index) {
 		let wikiDataItemLink = "";
 		let item = this._items[index];
-		const wikiDataLoginUrl = "https://www.wikidata.org/w/index.php?title=Special:UserLogin&returnto=Wikidata%3AMain+Page";
-		this._ATTEMPTS = 0;
+		// const wikiDataLoginUrl = "https://www.wikidata.org/w/index.php?title=Special:UserLogin&returnto=Wikidata%3AMain+Page";
+		// this._ATTEMPTS = 0;
 
-		// if (item.wikiDataLink) {
-		// 	Zotero.WikiData.openInViewer(item.wikiDataLink, null);
-		// } else {
-		// 	Zotero.WikiData.openInViewer(wikiDataLoginUrl, (doc) => this._checkupLoop(doc, item))
-		// }
-
-		let testLink = "https://www.wikidata.org/wiki/Q76342806";
-		Zotero.WikiData.openInViewer(testLink, (doc) => this._checkupLoop(doc, item));
+		if (item.wikiDataLink && !this._missingAnything) {
+			Zotero.WikiData.openInBrowser(item.wikiDataLink);
+		} else if (this._missingAnything) {
+			this._openItemInformationWindow(item);
+			Zotero.WikiData.openInBrowser(item.wikiDataLink);
+		} else {
+			this._openItemInformationWindow(item);
+			Zotero.WikiData.openInBrowser("https://www.wikidata.org/wiki/Special:NewItem");
+			// for automated completion
+			// Zotero.WikiData.openInViewer(wikiDataLoginUrl, (doc) => this._checkupLoop(doc, item))
+		}
 	},
 
-	_checkupLoop: function (doc, item) {
+	_openItemInformationWindow: function (item, missingInformation) {
+		window.openDialog(
+			'chrome://zotero-wikidata/content/itemPrefab/itemPrefab.xul',
+			'',
+			'chrome, titlebar, toolbar, centerscreen' + Zotero.Prefs.get('browser.preferences.instantApply', true) ? 'dialog=no' : 'modal',
+			item
+		);
+	},
+
+	_checkupLoop: async function (doc, item) {
+		// sleep for 500ms after each attempt to wait for possible loads and other update events on the dom
+		await this._sleep(this._WAITAFTERATTEMPT);
+
 		if (this._ATTEMPTS !== this._LIMIT) {
 			this._checkCurrentState(doc);
 
-			setTimeout(() => {
-				if (this._currentLoopState.login) {
-					this._authenticate(doc, item);
-				}
+			if (this._currentLoopState.login) {
+				this._authenticate(doc, item);
+			}
 
-				if (this._currentLoopState.mainPage) {
-					this._redirectToNewItem(doc, item)
-				}
+			if (this._currentLoopState.mainPage) {
+				this._redirectToNewItem(doc, item)
+			}
 
-				if (this._currentLoopState.createItem) {
-					this._createItem(doc, item);
-				}
+			if (this._currentLoopState.createItem) {
+				this._createItem(doc, item);
+			}
 
-				if (this._currentLoopState.popuplateItem) {
-					this._populateItem(doc, item);
-				}
-			}, this._WAITAFTERATTEMPT);
+			if (this._currentLoopState.popuplateItem) {
+				await this._populateItem(doc, item);
+			}
 			this._ATTEMPTS++;
 		} else {
 			this._restartAttempts();
 		}
-
 	},
 
 	_checkCurrentState: function (doc) {
@@ -280,20 +295,21 @@ Zotero.WikiData.ItemsPane = {
 	},
 
 	/**
-	 * Trigger an artificial key event on an element
-	 * @param element {HTMLElement} Element from the dom
-	 * @param key {keyCode | key} key which should be triggered
+	 *
+	 * @param string
+	 * @param element {HTMLElement}
+	 * @returns {Promise<void>}
 	 * @private
 	 */
-	_triggerKeyboardEvent: function (element, key) {
-		let keyboardEvent = new KeyboardEvent('keypress', {'key': key});
-		element.dispatchEvent(keyboardEvent);
-	},
-
-	_writeText: function (string, element) {
-		for (let char of string) {
-			setTimeout(this._triggerKeyboardEvent(element, char), 50);
+	_writeText: function (element, string) {
+		if (!element) {
+			return;
 		}
+
+		element.value = string;   // this alone was not working as keypress.
+		let evt = document.createEvent("HTMLEvents");
+		evt.initEvent("change", false, true); // adding this created a magic and passes it as if keypressed
+		element.dispatchEvent(evt);
 	},
 
 	_restartAttempts: function (doc, item) {
@@ -306,30 +322,32 @@ Zotero.WikiData.ItemsPane = {
 		// }
 	},
 
-	_authenticate: function (doc, item) {
+	_authenticate: async function (doc, item) {
 		// Get these dynamically later on
 		let username = "OtherWorldyTestAccount";
 		let password = "AwesomePassword123";
 
 		let usernameField = doc.getElementById('wpName1');
 		let passwordField = doc.getElementById('wpPassword1');
-		let loginButtonElement = doc.getElementById('wpLoginAttempt')
+		const loginButtonElement = doc.getElementById('wpLoginAttempt')
 
 		if (usernameField && usernameField.value.length === 0) {
-			usernameField = username;
+			usernameField.value = username;
 		}
 
 		if (passwordField && passwordField.value.length === 0) {
 			passwordField.value = password;
 		}
 
-		setTimeout(() => {
-			if (loginButtonElement && passwordField.value.length !== 0) {
-				loginButtonElement.click();
-			} else {
-				this._checkupLoop(doc, item);
-			}
-		}, this._WAITFORBUTTONCLICK);
+		await this._sleep(this._WAITAFTERINPUT)
+
+		if (loginButtonElement &&
+			(usernameField && usernameField.value.length !== 0) &&
+			(passwordField && passwordField.value.length !== 0)) {
+			loginButtonElement.click();
+		} else {
+			this._checkupLoop(doc, item);
+		}
 	},
 
 	_redirectToNewItem: function (doc, item) {
@@ -364,7 +382,7 @@ Zotero.WikiData.ItemsPane = {
 			} else {
 				this._checkupLoop(doc, item);
 			}
-		}, this._WAITFORBUTTONCLICK);
+		}, this._WAITAFTERINPUT);
 	},
 
 	/**
@@ -374,8 +392,8 @@ Zotero.WikiData.ItemsPane = {
 	 * @private
 	 */
 	_triggerAddStatementEvent: function (doc) {
-		const content = doc.getElementById('bodyContent');
-		const addStatementField = Zotero.Utilities.xpath(content,
+		let bodyContent = doc.getElementById('bodyContent');
+		const addStatementField = Zotero.Utilities.xpath(bodyContent,
 			'//div[@class="wikibase-statementgrouplistview"]' +
 			'/div[@class="wikibase-addtoolbar wikibase-toolbar-item wikibase-toolbar ' +
 			'wikibase-addtoolbar-container wikibase-toolbar-container"]' +
@@ -384,60 +402,67 @@ Zotero.WikiData.ItemsPane = {
 		);
 
 		addStatementField[0].click();
-
-		// wait for event to be triggered
-		setTimeout(() => {}, 250);
-
-		const statementListView = Zotero.Utilities.xpath(content,
-			'//div[@class="wikibase-statementgrouplistview"]' +
-			'/div[@class="wikibase-listview"]');
-		return statementListView[0];
 	},
 
-	_addInstanceOfProperty: function (statementListEl) {
-		const propertyInputField = Zotero.Utilities.xpath(statementListEl,
+	/**
+	 *
+	 * @param doc {HTMLDocument} Current DOM of the browser
+	 * @returns {*}
+	 * @private
+	 */
+	_getStatementListElement: function (doc) {
+		const bodyContent = doc.getElementById('bodyContent');
+		return Zotero.Utilities.xpath(bodyContent, '//div[@class="wikibase-statementgrouplistview"]')[0];
+	},
+
+	_addInstanceOfProperty: async function (doc) {
+		let statementListEl = this._getStatementListElement(doc);
+		let propertyInputField = Zotero.Utilities.xpath(statementListEl,
 			'//div[@class="wikibase-snakview-property-container"]' +
 			'/div[@class="wikibase-snakview-property"]' +
-			'/input');
+			'/input')[0];
 
-		Zotero.debug('inner html: ' + statementListEl.innerHTML);
-		Zotero.debug('property field: ' + propertyInputField);
-		Zotero.debug('property field array 0: ' + propertyInputField[0]);
+		// focus input field to be sure
+		propertyInputField.focus();
 
+		// sleep for 250 ms to wait for the dom to update
+		await this._sleep(this._WAITAFTERINPUT);
+
+		propertyInputField.focus();
 		// write text instance of into the property field
-		setTimeout(() => {
-			this._writeText("instance of", propertyInputField);
-		}, 250);
+		this._writeText(propertyInputField, "instance of");
 
-		// confirm it by pressing return on the given element
-		setTimeout(() => {
-			this._triggerKeyboardEvent(propertyInputField, this._RETURNKEYCODE); // press return
-		}, 250);
+		// sleep for 250 ms to wait for the dom to update
+		await this._sleep(this._WAITAFTERINPUT);
 
+		let instanceOfItem = Zotero.Utilities.xpath(statementListEl, '//a[@href="//www.wikidata.org/wiki/Property:P31"]')[0].parentElement;
+		/**
+		 * reahed limit of automating here !
+		 * cannot dispatch keyboard or mouse events since see: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#Auto-repeat_handling_prior_to_Gecko_5.0
+		 */
+		instanceOfItem.click();
+
+		// sleep for 250 ms to wait for the dom to update
+		await this._sleep(this._WAITAFTERINPUT);
+
+		// re-set the statementListEl to have a fresh representation of the dom
+		statementListEl = this._getStatementListElement(doc);
 		const propertyValue = Zotero.Utilities.xpath(statementListEl,
 			'//div[@class="wikibase-snakview-body"]' +
 			'/div[@class="wikibase-snakview-value wikibase-snakview-variation-valuesnak"]' +
 			'/div' +
 			'/div' +
-			'/textarea'
-		);
+			'/textarea')[0];
 
-		Zotero.debug('property value: ' + propertyValue);
-		Zotero.debug('property value array 0: ' + propertyValue[0]);
+		await this._sleep(this._WAITAFTERINPUT);
+		this._writeText(propertyValue, "scholarly article");
 
-		setTimeout(() => {
-			this._writeText("scholarly article", propertyValue);
-		}, 250);
-
-		// setTimeout(() => {
 		// 	this._triggerKeyEvents(propertyField, this._RETURNKEYCODE); // press return
-		// }, 250);
 	},
 
-	_populateItem: function (doc, item) {
-		const statementListEl = this._triggerAddStatementEvent(doc);
-		this._addInstanceOfProperty(statementListEl);
-
-		// setTimeout(this._checkupLoop(doc, item), 250);
+	_populateItem: async function (doc, item) {
+		this._triggerAddStatementEvent(doc);
+		await this._sleep(this._WAITAFTERINPUTT);
+		await this._addInstanceOfProperty(doc);
 	}
 };

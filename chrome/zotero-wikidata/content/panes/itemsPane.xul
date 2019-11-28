@@ -10,6 +10,7 @@
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         id="zotero-wikidata-items"
         buttons="cancel"
+        title="WikiData listing"
         onload="Zotero.WikiData.ItemsPane.init()">
 
     <script src="chrome://zotero/content/include.js" type="application/javascript"/>

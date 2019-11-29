@@ -1,7 +1,12 @@
+#zotero-wikidata-main-menu {
+    margin: 0.1em 0.25em 0.5em 0.25em;
+}
+
 /** Startup view */
 #zotero-wikidata-items-tree {
     width: 640px;
     height: 480px;
+
     padding: 0.25em;
 }
 

@@ -4,11 +4,11 @@ Zotero.WikiData.Entry = {
 
     },
 
-    _openItemInformationWindow: function (item) {
+    openItemInformationWindow: function (item) {
         window.openDialog(
             'chrome://zotero-wikidata/content/itemPrefab/itemPrefab.xul',
             '',
-            'chrome, titlebar, toolbar, centerscreen' + Zotero.Prefs.get('browser.preferences.instantApply', true) ? 'dialog=no' : 'modal',
+            'chrome, titlebar, toolbar, centerscreen',
             item
         );
     },

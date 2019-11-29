@@ -73,14 +73,19 @@
             </hbox>
 
             <hbox>
+                <label value="&zotero.wikidata.items.language;"/>
+                <textbox id="item-language" flex="1"/>
+            </hbox>
+
+            <hbox>
                 <label value="&zotero.wikidata.items.issue;"/>
                 <textbox id="item-issue" flex="1"/>
             </hbox>
         </groupbox>
 
         <groupbox>
-            <spacer flex="1"/>
             <hbox>
+                <spacer flex="1"/>
                 <button label="&zotero.wikidata.general.close;" oncommand="window.close();"/>
             </hbox>
         </groupbox>

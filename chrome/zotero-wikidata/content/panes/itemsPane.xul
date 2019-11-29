@@ -11,12 +11,14 @@
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         id="zotero-wikidata-items"
         title="&zotero.wikidata.title;"
-        onload="Zotero.WikiData.ItemsPane.init()">
+        onload="Zotero.WikiData.ItemsPane.init();">
 
     <script src="chrome://zotero/content/include.js"/>
 
+    <script src="./itemsPane.js" type="application/javascript"/>
+    <script src="./itemMenu.js" type="application/javascript"/>
     <script src="chrome://zotero-wikidata/content/wikidata/sparql.js" type="application/javascript"/>
-    <script src="chrome://zotero-wikidata/content/panes/itemsPane.js" type="application/javascript"/>
+    <script src="chrome://zotero-wikidata/content/wikidata/wikiDataEntry.js" type="application/javascript"/>
 
     <vbox>
         <vbox>
@@ -32,12 +34,17 @@
                 </menubar>
             </toolbox>
         </vbox>
-        <vbox zotero-persist="width height" flex="1">
-            <hbox zotero-persist="width height" flex="1">
+        <hbox>
+            <menupopup id="options-menu">
+                <menuitem label="Create Manual" id="create-item-manual"/>
+                <menuitem label="Create Automated" id="create-item-automated"/>
+            </menupopup>
+        </hbox>
+        <vbox flex="1">
+            <hbox flex="1">
                 <tree id="zotero-wikidata-items-tree"
                       enableColumnDrag="true"
                       disableKeyNavigation="true"
-                      ondblclick="Zotero.WikiData.ItemsPane.openUpLinkOrCreate(this.currentIndex)"
                       flex="1">
                     <treecols id="zotero-wikidata-items-header">
                         <treecol id="zotero-wikidata-column-title" primary="true"

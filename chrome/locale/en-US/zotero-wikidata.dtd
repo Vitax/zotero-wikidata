@@ -15,13 +15,16 @@
 <!ENTITY zotero.wikidata.items.create "Create">
 <!ENTITY zotero.wikidata.items.loading "Loading...">
 
-<!ENTITY zotero.wikidata.state.stuck "It seems like I am stuck and can't do anything anymore.">
-<!ENTITY zotero.wikidata.state.continue "Try again">
-<!ENTITY zotero.wikidata.state.stop "Stop">
-
 <!ENTITY zotero.wikidata.items.label "Label &amp; Title">
 <!ENTITY zotero.wikidata.items.description "Description">
 <!ENTITY zotero.wikidata.items.aliases "Aliases">
-<!ENTITY zotero.wikidata.items.instance-of "Instance of">
-<!ENTITY zotero.wikidata.items.type.author "Author">
+<!ENTITY zotero.wikidata.items.instance-of "Instance Of">
+<!ENTITY zotero.wikidata.items.author "Author">
+<!ENTITY zotero.wikidata.items.pages "Pages">
+<!ENTITY zotero.wikidata.items.volume "Volume">
+<!ENTITY zotero.wikidata.items.issue "Issue">
+<!ENTITY zotero.wikidata.items.language "Language">
 
+<!ENTITY zotero.wikidata.state.stuck "It seems like I am stuck and can't do anything anymore.">
+<!ENTITY zotero.wikidata.state.continue "Try again">
+<!ENTITY zotero.wikidata.state.stop "Stop">

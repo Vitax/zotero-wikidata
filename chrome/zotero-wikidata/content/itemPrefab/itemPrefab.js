@@ -20,8 +20,16 @@ Zotero.WikiData.ItemPrefab = {
         this._setAliases(item);
         this._setInstanceOf();
         this._setDOI(item);
+        this._setISSN(item);
         this._setPMID(item);
+
         this._setAuthors(item);
+
+        this._setPages(item);
+        this._setVolume(item);
+        this._setIssue(item);
+        this._setLanguage(item);
+
     },
 
     _setTitle: function (item) {
@@ -71,7 +79,7 @@ Zotero.WikiData.ItemPrefab = {
 
     _setDOI: function (item) {
         let doiField = document.getElementById('item-doi');
-        doiField.value = item.getField("DOI");
+        doiField.value = item.getField("DOI").toUpperCase();
     },
 
     _setPMID: function (item) {
@@ -106,23 +114,28 @@ Zotero.WikiData.ItemPrefab = {
     },
 
     _setPages: function (item) {
-
+       let pagesField = document.getElementById('item-pages');
+       pagesField.value = item.getField('pages');
     },
 
     _setVolume: function(item) {
-
+        let volumeField = document.getElementById('item-volume');
+        volumeField.value = item.getField('volume');
     },
 
     _setIssue: function (item) {
-
+        let issueField = document.getElementById('item-issue');
+        issueField.value = item.getField('issue');
     },
 
     _setDate: function(item) {
-
+        let dateField = document.getElementById('item-date');
+        dateField.value = item.getField('date');
     },
 
     _setLanguage: function(item) {
-
-    },
+        let languageField = document.getElementById('item-language');
+        languageField.value = item.getField('language');
+    }
 
 };

@@ -1,41 +1,61 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://zotero-wikidata/skin/overlay.css" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero/skin/overlay.css" type="text/css"?>
 
-<!DOCTYPE dialog [
+<!DOCTYPE window [
         <!ENTITY % globaldtd SYSTEM "chrome://zotero-wikidata/locale/zotero-wikidata.dtd"> %globaldtd;
         ]>
 
 <!-- Author: Caglar Özel -->
 
-<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         id="zotero-wikidata-items"
-        buttons="cancel"
-        title="WikiData listing"
+        title="&zotero.wikidata.title;"
         onload="Zotero.WikiData.ItemsPane.init()">
 
-    <script src="chrome://zotero/content/include.js" type="application/javascript"/>
+    <script src="chrome://zotero/content/include.js"/>
 
     <script src="chrome://zotero-wikidata/content/wikidata/sparql.js" type="application/javascript"/>
     <script src="chrome://zotero-wikidata/content/panes/itemsPane.js" type="application/javascript"/>
-    <script src="chrome://zotero-wikidata/content/panes/wikiData.js" type="application/javascript"/>
 
-    <vbox zotero-persist="width height" flex="1">
-        <hbox zotero-persist="width height" flex="1">
-            <tree id="zotero-wikidata-items-tree"
-                  enableColumnDrag="true"
-                  disableKeyNavigation="true"
-                  ondblclick="Zotero.WikiData.ItemsPane.openUpLinkOrCreate(this.currentIndex)"
-                  flex="1">
-                <treecols id="zotero-wikidata-items-header">
-                    <treecol id="zotero-wikidata-column-title" primary="true"
-                             label="&zotero.wikidata.items.title;"
-                             flex="4"/>
-                    <treecol id="zotero-wikidata-column-url"
-                             label="&zotero.wikidata.items.wikidata-url;"
-                             flex="1"/>
-                </treecols>
-                <treechildren id="zotero-wikidata-items-children"/>
-            </tree>
-        </hbox>
+    <vbox>
+        <vbox>
+            <toolbox>
+                <menubar id="zotero-wikidata-main-menu">
+                    <menu label="&zotero.wikidata.toolbar.config;">
+                        <menupopup>
+                            <menuseparator/>
+                            <menuitem label="&zotero.wikidata.toolbar.config.setup.credentials;"
+                                      oncommand="window.openDialog('chrome://zotero-wikidata/content/configuration/credentials.xul');"/>
+                        </menupopup>
+                    </menu>
+                </menubar>
+            </toolbox>
+        </vbox>
+        <vbox zotero-persist="width height" flex="1">
+            <hbox zotero-persist="width height" flex="1">
+                <tree id="zotero-wikidata-items-tree"
+                      enableColumnDrag="true"
+                      disableKeyNavigation="true"
+                      ondblclick="Zotero.WikiData.ItemsPane.openUpLinkOrCreate(this.currentIndex)"
+                      flex="1">
+                    <treecols id="zotero-wikidata-items-header">
+                        <treecol id="zotero-wikidata-column-title" primary="true"
+                                 label="&zotero.wikidata.items.title;"
+                                 flex="4"/>
+                        <treecol id="zotero-wikidata-column-url"
+                                 label="&zotero.wikidata.items.wikidata-url;"
+                                 flex="1"/>
+                    </treecols>
+                    <treechildren id="zotero-wikidata-items-children"/>
+                </tree>
+            </hbox>
+        </vbox>
+        <vbox>
+            <hbox>
+                <spacer flex="1"/>
+                <button label="&zotero.wikidata.general.close;" oncommand="window.close();"/>
+            </hbox>
+        </vbox>
     </vbox>
-</dialog>
+</window>

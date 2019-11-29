@@ -1,0 +1,22 @@
+{
+  "name": "zotero-wikidata",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vitax/zotero-wikidata.git"
+  },
+  "author": "Caglar Özel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vitax/zotero-wikidata/issues"
+  },
+  "homepage": "https://github.com/Vitax/zotero-wikidata#readme",
+  "dependencies": {
+    "wikibase-edit": "^3.2.14"
+  }
+}

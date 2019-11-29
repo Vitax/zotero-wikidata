@@ -52,7 +52,7 @@ Zotero.WikiData = new function () {
 				"viewer", "chrome,dialog=yes,resizable,centerscreen,menubar,scrollbars", arg);
 		}
 		if (onload) {
-			let browser
+			let browser;
 			let func = function () {
 				browser = win.document.documentElement.getElementsByTagName('browser')[0];
 				browser.addEventListener("pageshow", innerFunc);

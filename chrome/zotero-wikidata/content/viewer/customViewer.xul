@@ -58,7 +58,8 @@
         <!--FILE-->
         <command id="cmd_save" oncommand="saveDocument(browser.contentDocument);"/>
         <command id="cmd_print" oncommand="browser.contentWindow.print()"/>
-        <command id="cmd_close" oncommand="window.removeEventListener('load', () => {}); window.removeEventListener('pageshow', () => {}); window.close();"/>
+        <command id="cmd_close"
+                 oncommand="window.removeEventListener('load', () => {}); window.removeEventListener('pageshow', () => {}); window.close();"/>
 
         <!--EDIT-->
         <commandset id="editMenuCommands"/>

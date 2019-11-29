@@ -1,4 +1,8 @@
 <!ENTITY zotero.wikidata.name "Zotero WikiData">
+<!ENTITY zotero.wikidata.title "WikiData Entries">
+
+<!ENTITY zotero.wikidata.toolbar.config "Configuration">
+<!ENTITY zotero.wikidata.toolbar.config.setup.credentials "Setup Credentials">
 
 <!ENTITY zotero.wikidata.explanation1 "This window prepared all information you will need to create a WikiData entry.">
 <!ENTITY zotero.wikidata.explanation2 "Please be aware that this data may contain faults. Therefore double check what you are entering into WikiData.">
@@ -15,13 +19,9 @@
 <!ENTITY zotero.wikidata.state.continue "Try again">
 <!ENTITY zotero.wikidata.state.stop "Stop">
 
-<!-- Entities should always be english since the default entry in WikiData will be on english ! -->
-<!ENTITY zotero.wikidata.items.type.article "Journal article released on ">
-<!ENTITY zotero.wikidata.items.type.book "Book released on ">
-<!ENTITY zotero.wikidata.items.type.website "Article from the Internet from ">
-
-<!ENTITY zotero.wikidata.items.label "Label & Title: ">
-<!ENTITY zotero.wikidata.items.description "Description: ">
-<!ENTITY zotero.wikidata.items.aliases "Aliases: ">
-<!ENTITY zotero.wikidata.items.instance-of "Instance of: ">
+<!ENTITY zotero.wikidata.items.label "Label &amp; Title">
+<!ENTITY zotero.wikidata.items.description "Description">
+<!ENTITY zotero.wikidata.items.aliases "Aliases">
+<!ENTITY zotero.wikidata.items.instance-of "Instance of">
+<!ENTITY zotero.wikidata.items.type.author "Author">
 

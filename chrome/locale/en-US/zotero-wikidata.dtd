@@ -25,6 +25,13 @@
 <!ENTITY zotero.wikidata.items.issue "Issue">
 <!ENTITY zotero.wikidata.items.language "Language">
 
+<!ENTITY zotero.wikidata.view.information "View Information">
+
+<!ENTITY zotero.wikidata.create.manual "Create manual">
+<!ENTITY zotero.wikidata.create.manual.tooltip "This option will open a browser and spawn a window with all information contained in Zotero.">
+<!ENTITY zotero.wikidata.create.rest "Create through REST">
+<!ENTITY zotero.wikidata.create.tooltip "If provided with a Username and Password this action will create the WikiData entry through REST call.">
+
 <!ENTITY zotero.wikidata.state.stuck "It seems like I am stuck and can't do anything anymore.">
 <!ENTITY zotero.wikidata.state.continue "Try again">
 <!ENTITY zotero.wikidata.state.stop "Stop">

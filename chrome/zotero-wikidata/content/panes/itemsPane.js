@@ -8,7 +8,6 @@ Zotero.WikiData.ItemsPane = {
 	_WAITAFTERATTEMPT: 500, //in ms
 
 	_missingAnything: false,
-	_items: null,
 	_currentLoopState: {
 		login: false,
 		mainPage: false,
@@ -44,32 +43,34 @@ Zotero.WikiData.ItemsPane = {
 		}
 
 		let tree = t.parentNode;
-
 		let row = {}, col = {}, obj = {};
 		tree.treeBoxObject.getCellAt(event.clientX, event.clientY, row, col, obj);
 
 		let treeitem = this._items[row.value];
 
-		// Check for left and right click
+		// Handle right clicking on an tree row to populate the events with the correct objects
 		if (event && event.button == 2 && event.detail == 1) {
-			let popupset = document.createElement("popupset");
-			let menupopup = document.createElement('menupopup');
-			let createManual = document.createElement('menuitem');
-			let createViaRest = document.createElement('menuitem');
+			let createManual = document.getElementById('view-item-information');
+			let createViaRest = document.getElementById('create-item-rest');
 
-			createManual.setAttribute('label', 'Create Manual');
-			createViaRest.setAttribute('label', 'Create through API');
+			if (treeitem.wikiDataLink === "") {
+				let label = "whatever";
+				let description = "blalbalbla";
+				let aliases = "foo, bar";
+				let claims = {"pid180723": ["fdjklaskf", "falsdjf"]}
 
-			createManual.addEventListener('command', Zotero.WikiData.Entry.openItemInformationWindow(treeitem));
-			createViaRest.addEventListener('command', Zotero.WikiData.Entry.createNewEntry("", "", "", {}));
+				createManual.setAttribute('disabled', 'false');
+				createViaRest.setAttribute('disabled', 'false');
 
-			menupopup.appendChild(createManual);
-			menupopup.appendChild(createViaRest);
-
-			popupset.appendChild(menupopup);
-
-			document.appendChild(popupset);
+				createManual.setAttribute('oncommand', 'Zotero.WikiData.Entry.openItemInformationWindow(' + JSON.stringify(treeitem) + ')');
+				createViaRest.setAttribute('oncommand', 'Zotero.WikiData.Entry.createNewEntry(' + label + ',' + description + ',' + aliases + ',' + JSON.stringify(claims) + '})');
+			} else {
+				createManual.setAttribute('disabled', 'true');
+				createViaRest.setAttribute('disabled', 'true');
+			}
 		}
+
+		// Open up the WikiData entry in the local browser with a double click
 		if (event && event.button == 0 && event.detail == 2) {
 			this.openUpLink(treeitem);
 		}
@@ -82,15 +83,14 @@ Zotero.WikiData.ItemsPane = {
 	 */
 	_loadItems: Zotero.Promise.coroutine(function* () {
 		const itemIDs = yield Zotero.DB.columnQueryAsync(`
-            SELECT DISTINCT items.itemID
-            FROM items
-                     LEFT JOIN itemTypeFields
-                               ON items.itemTypeID = itemTypeFields.itemTypeID
-                     LEFT JOIN itemTypes
-                               ON items.itemTypeID = itemTypes.itemTypeID
-            WHERE itemTypes.typeName <> 'attachment'
-              AND itemTypes.typeName <> 'note'
-		`);
+				SELECT DISTINCT items.itemID
+					FROM items
+				LEFT JOIN itemTypeFields
+					ON items.itemTypeID = itemTypeFields.itemTypeID
+				LEFT JOIN itemTypes
+					ON items.itemTypeID = itemTypes.itemTypeID
+				WHERE itemTypes.typeName <> 'attachment'
+					AND itemTypes.typeName <> 'note'`);
 
 		let items = yield Zotero.Items.getAsync(itemIDs);
 		let promises = [];
@@ -103,7 +103,7 @@ Zotero.WikiData.ItemsPane = {
 			let queryString = "";
 
 			if (item.getField("DOI")) {
-				queryString = `SELECT ?item WHERE { ?item ?doi  "${item.getField("DOI").toUpperCase()}". }`;
+				queryString = `SELECT ?item WHERE { ?item ?doi "${item.getField("DOI").toUpperCase()}".}`;
 
 				promises.push(this.queryDispatcher.queryEntry(queryString)
 					.then(result => {

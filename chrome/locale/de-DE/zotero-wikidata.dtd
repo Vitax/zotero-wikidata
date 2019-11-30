@@ -20,3 +20,15 @@
 <!ENTITY zotero.wikidata.items.description "Description: ">
 <!ENTITY zotero.wikidata.items.aliases "Aliases: ">
 <!ENTITY zotero.wikidata.items.instance-of "Instance of: ">
+<!ENTITY zotero.wikidata.items.author "Author">
+<!ENTITY zotero.wikidata.items.pages "Pages">
+<!ENTITY zotero.wikidata.items.volume "Volume">
+<!ENTITY zotero.wikidata.items.issue "Issue">
+<!ENTITY zotero.wikidata.items.language "Language">
+
+
+<!ENTITY zotero.wikidata.view.information "Informationen einsehen">
+
+<!ENTITY zotero.wikidata.create.manual "Manuel erstellen">
+<!ENTITY zotero.wikidata.create.rest "Über REST erstellen">
+

@@ -59,29 +59,34 @@
                     <label value="ISSN: "/>
                     <textbox id="item-issn" flex="1"/>
                 </hbox>
+
+                <hbox>
+                    <label value="ISBN: "/>
+                    <textbox id="item-isbn" flex="1"/>
+                </hbox>
             </groupbox>
 
             <groupbox flex="1" id="authors-container"/>
 
             <groupbox flex="1">
                 <hbox>
-                    <label value="&zotero.wikidata.items.pages;"/>
-                    <textbox id="item-pages" flex="1"/>
-                </hbox>
-
-                <hbox>
-                    <label value="&zotero.wikidata.items.volume;"/>
-                    <textbox id="item-volume" flex="1"/>
-                </hbox>
-
-                <hbox>
                     <label value="&zotero.wikidata.items.language;"/>
                     <textbox id="item-language" flex="1"/>
                 </hbox>
 
                 <hbox>
+                    <label value="&zotero.wikidata.items.pages;"/>
+                    <textbox id="item-pages" flex="1"/>
+                </hbox>
+
+                <hbox>
                     <label value="&zotero.wikidata.items.issue;"/>
                     <textbox id="item-issue" flex="1"/>
+                </hbox>
+
+                <hbox>
+                    <label value="&zotero.wikidata.items.volume;"/>
+                    <textbox id="item-volume" flex="1"/>
                 </hbox>
             </groupbox>
         </vbox>

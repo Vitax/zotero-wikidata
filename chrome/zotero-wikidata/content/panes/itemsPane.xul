@@ -22,7 +22,7 @@
     <script src="chrome://zotero-wikidata/content/wikidata/translations.js" type="application/javascript"/>
     <script src="chrome://zotero-wikidata/content/wikidata/wikiDataEntry.js" type="application/javascript"/>
 
-    <vbox>
+    <vbox flex="1">
         <vbox>
             <toolbox>
                 <menubar id="zotero-wikidata-main-menu">
@@ -50,9 +50,15 @@
                                  label="&zotero.wikidata.items.wikidata-url;"
                                  flex="1"/>
                     </treecols>
-                    <treechildren id="zotero-wikidata-items-children"/>
+                    <treechildren id="zotero-wikidata-items-children" contextmenu="item-options"/>
                 </tree>
             </hbox>
+            <menupopup id="item-options">
+                <menuitem id="view-item-information"
+                          label="&zotero.wikidata.create.manual;"/>
+                <menuitem id="create-item-rest"
+                          label="&zotero.wikidata.create.rest;"/>
+            </menupopup>
         </vbox>
         <vbox>
             <hbox>

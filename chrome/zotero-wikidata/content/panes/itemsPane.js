@@ -17,9 +17,11 @@ Zotero.WikiData.ItemsPane = {
 	},
 
 	init: async function () {
+		this._ZoteroWikiDataIntl = new Zotero.WikiData.Intl();
 		this.queryDispatcher = new Zotero.WikiData.SPARQLQueryDispatcher("https://query.wikidata.org/sparql");
 
-		await this._loadItems();
+		let treeview = await this._loadItems();
+		document.getElementById('zotero-wikidata-items-tree').view = treeview;
 		this._registerClickEventHandler();
 	},
 
@@ -50,15 +52,23 @@ Zotero.WikiData.ItemsPane = {
 
 		// Check for left and right click
 		if (event && event.button == 2 && event.detail == 1) {
-			let optionsMenu = document.getElementById('options-menu');
+			let popupset = document.createElement("popupset");
+			let menupopup = document.createElement('menupopup');
+			let createManual = document.createElement('menuitem');
+			let createViaRest = document.createElement('menuitem');
 
-			optionsMenu.addEventListener("onpopupshowing", () => {
-				let createManual = document.getElementById('create-item-manual');
-				let createAutomated = document.getElementById('create-item-automated');
+			createManual.setAttribute('label', 'Create Manual');
+			createViaRest.setAttribute('label', 'Create through API');
 
-				createManual.addEventListener('command', Zotero.WikiData.Entry.openItemInformationWindow(treeitem));
-				createAutomated.addEventListener('command', Zotero.WikiData.Entry.createNewEntry("", "", "", {}));
-			})
+			createManual.addEventListener('command', Zotero.WikiData.Entry.openItemInformationWindow(treeitem));
+			createViaRest.addEventListener('command', Zotero.WikiData.Entry.createNewEntry("", "", "", {}));
+
+			menupopup.appendChild(createManual);
+			menupopup.appendChild(createViaRest);
+
+			popupset.appendChild(menupopup);
+
+			document.appendChild(popupset);
 		}
 		if (event && event.button == 0 && event.detail == 2) {
 			this.openUpLink(treeitem);
@@ -67,13 +77,11 @@ Zotero.WikiData.ItemsPane = {
 
 	/**
 	 *
-	 * @returns {Promise<void>}
+	 * @returns {Object}
 	 * @private
 	 */
-	_loadItems: async function () {
-		let tree = document.getElementById('zotero-wikidata-items-tree');
-		let self = this;
-		const itemIDs = await Zotero.DB.columnQueryAsync(`
+	_loadItems: Zotero.Promise.coroutine(function* () {
+		const itemIDs = yield Zotero.DB.columnQueryAsync(`
             SELECT DISTINCT items.itemID
             FROM items
                      LEFT JOIN itemTypeFields
@@ -84,7 +92,7 @@ Zotero.WikiData.ItemsPane = {
               AND itemTypes.typeName <> 'note'
 		`);
 
-		let items = await Zotero.Items.getAsync(itemIDs);
+		let items = yield Zotero.Items.getAsync(itemIDs);
 		let promises = [];
 
 		items = items.filter(item => !item.deleted);
@@ -110,48 +118,46 @@ Zotero.WikiData.ItemsPane = {
 			}
 		}
 
-		await Zotero.Promise.all(promises)
-			.then(() => {
-				this._items = items;
+		yield Zotero.Promise.all(promises);
+		this._items = items;
 
-				tree.view = {
-					rowCount: items.length,
-					getCellText: function (row, column) {
-						if (column.id === "zotero-wikidata-column-title") {
-							return items[row].getField('title')
-						}
+		return {
+			rowCount: items.length,
+			getCellText: function (row, column) {
+				if (column.id === "zotero-wikidata-column-title") {
+					return items[row].getField('title')
+				}
 
-						if (column.id === "zotero-wikidata-column-url") {
-							return items[row].wikiDataEntry;
-						}
-					},
-					setTree: function (treebox) {
-						this.treebox = treebox;
-					},
-					isContainer: function (row) {
-						return false;
-					},
-					isSeparator: function (row) {
-						return false;
-					},
-					isSorted: function () {
-						return false;
-					},
-					getLevel: function (row) {
-						return 0;
-					},
-					getImageSrc: function (row, col) {
-						return null;
-					},
-					getRowProperties: function (row, props) {
-					},
-					getCellProperties: function (row, col, props) {
-					},
-					getColumnProperties: function (colid, col, props) {
-					}
-				};
-			});
-	},
+				if (column.id === "zotero-wikidata-column-url") {
+					return items[row].wikiDataEntry;
+				}
+			},
+			setTree: function (treebox) {
+				this.treebox = treebox;
+			},
+			isContainer: function (row) {
+				return false;
+			},
+			isSeparator: function (row) {
+				return false;
+			},
+			isSorted: function () {
+				return false;
+			},
+			getLevel: function (row) {
+				return 0;
+			},
+			getImageSrc: function (row, col) {
+				return null;
+			},
+			getRowProperties: function (row, props) {
+			},
+			getCellProperties: function (row, col, props) {
+			},
+			getColumnProperties: function (colid, col, props) {
+			}
+		};
+	}),
 
 	_handleRightClick: function (item, clientX, clientY) {
 		Zotero.debug(JSON.stringify(item));
@@ -248,11 +254,11 @@ Zotero.WikiData.ItemsPane = {
 
 	_getDescriptionString(item) {
 		if (item.itemType === 'journalArticle') {
-			return Zotero.getString('zotero.wikidata.items.type.article') + item.date;
+			return this._ZoteroWikiDataIntl.getString('zotero.wikidata.items.type.article') + item.date;
 		}
 
 		if (item.itemType === 'book') {
-			return Zotero.getString('zotero.wikidata.items.type.book') + item.date;
+			return this._ZoteroWikiDataIntl.getString('zotero.wikidata.items.type.book') + item.date;
 		}
 
 		return "Item release on " + item.date;

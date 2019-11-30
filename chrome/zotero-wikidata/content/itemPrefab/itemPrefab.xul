@@ -10,84 +10,88 @@
 <window id="zotero-wikidata-information"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         onload="Zotero.WikiData.ItemPrefab.init()"
-        width="720" height="1080"
         persist="screenX screenY width height sizemode">
 
     <script src="chrome://zotero/content/include.js"/>
     <script src="chrome://zotero-wikidata/content/itemPrefab/itemPrefab.js" type="application/javascript"/>
     <script src="chrome://zotero-wikidata/content/wikidata/translations.js" type="application/javascript"/>
 
-    <vbox id="zotero-wikidata-item-content">
-        <groupbox>
-            <description value="&zotero.wikidata.explanation1;"/>
-            <description value="&zotero.wikidata.explanation2;"/>
-        </groupbox>
-        <groupbox>
-            <hbox>
-                <label value="&zotero.wikidata.items.label;"/>
-                <textbox id="item-title" flex="1"/>
-            </hbox>
+    <vbox flex="1">
+        <vbox>
+            <groupbox>
+                <description value="&zotero.wikidata.explanation1;"/>
+                <description value="&zotero.wikidata.explanation2;"/>
+            </groupbox>
+        </vbox>
+        <vbox id="zotero-wikidata-item-content" flex="1">
+            <groupbox flex="1">
+                <hbox>
+                    <label value="&zotero.wikidata.items.label;"/>
+                    <textbox id="item-title" flex="1"/>
+                </hbox>
 
-            <hbox>
-                <label value="&zotero.wikidata.items.description;"/>
-                <textbox id="item-description" flex="1"/>
-            </hbox>
+                <hbox>
+                    <label value="&zotero.wikidata.items.description;"/>
+                    <textbox id="item-description" flex="1"/>
+                </hbox>
 
-            <hbox>
-                <label value="&zotero.wikidata.items.aliases;"/>
-                <textbox id="item-aliases" flex="1"/>
-            </hbox>
+                <hbox>
+                    <label value="&zotero.wikidata.items.aliases;"/>
+                    <textbox id="item-aliases" flex="1"/>
+                </hbox>
 
-            <hbox>
-                <label value="&zotero.wikidata.items.instance-of;"/>
-                <textbox id="item-instance-of" flex="1"/>
-            </hbox>
+                <hbox>
+                    <label value="&zotero.wikidata.items.instance-of;"/>
+                    <textbox id="item-instance-of" flex="1"/>
+                </hbox>
 
-            <hbox>
-                <label value="DOI: "/>
-                <textbox id="item-doi" flex="1"/>
-            </hbox>
+                <hbox>
+                    <label value="DOI: "/>
+                    <textbox id="item-doi" flex="1"/>
+                </hbox>
 
-            <hbox>
-                <label value="PMID: "/>
-                <textbox id="item-pmid" flex="1"/>
-            </hbox>
+                <hbox>
+                    <label value="PMID: "/>
+                    <textbox id="item-pmid" flex="1"/>
+                </hbox>
 
-            <hbox>
-                <label value="ISSN: "/>
-                <textbox id="item-issn" flex="1"/>
-            </hbox>
-        </groupbox>
+                <hbox>
+                    <label value="ISSN: "/>
+                    <textbox id="item-issn" flex="1"/>
+                </hbox>
+            </groupbox>
 
-        <groupbox id="authors-container"/>
+            <groupbox flex="1" id="authors-container"/>
 
-        <groupbox>
-            <hbox>
-                <label value="&zotero.wikidata.items.pages;"/>
-                <textbox id="item-pages" flex="1"/>
-            </hbox>
+            <groupbox flex="1">
+                <hbox>
+                    <label value="&zotero.wikidata.items.pages;"/>
+                    <textbox id="item-pages" flex="1"/>
+                </hbox>
 
-            <hbox>
-                <label value="&zotero.wikidata.items.volume;"/>
-                <textbox id="item-volume" flex="1"/>
-            </hbox>
+                <hbox>
+                    <label value="&zotero.wikidata.items.volume;"/>
+                    <textbox id="item-volume" flex="1"/>
+                </hbox>
 
-            <hbox>
-                <label value="&zotero.wikidata.items.language;"/>
-                <textbox id="item-language" flex="1"/>
-            </hbox>
+                <hbox>
+                    <label value="&zotero.wikidata.items.language;"/>
+                    <textbox id="item-language" flex="1"/>
+                </hbox>
 
-            <hbox>
-                <label value="&zotero.wikidata.items.issue;"/>
-                <textbox id="item-issue" flex="1"/>
-            </hbox>
-        </groupbox>
-
-        <groupbox>
-            <hbox>
-                <spacer flex="1"/>
-                <button label="&zotero.wikidata.general.close;" oncommand="window.close();"/>
-            </hbox>
-        </groupbox>
+                <hbox>
+                    <label value="&zotero.wikidata.items.issue;"/>
+                    <textbox id="item-issue" flex="1"/>
+                </hbox>
+            </groupbox>
+        </vbox>
+        <vbox>
+            <groupbox>
+                <hbox>
+                    <spacer flex="1"/>
+                    <button label="&zotero.wikidata.general.close;" oncommand="window.close();"/>
+                </hbox>
+            </groupbox>
+        </vbox>
     </vbox>
 </window>

@@ -4,11 +4,17 @@
 
 Zotero.WikiData = new function () {
 	this.openItemsPane = function () {
-		window.openDialog(
-			'chrome://zotero-wikidata/content/panes/itemsPane.xul',
-			'',
-			'chrome, titlebar, toolbar, centerscreen',
-		);
+		let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+			.getService(Components.interfaces.nsIWindowMediator);
+		let win = wm.getMostRecentWindow("zotero:wikidata:itemsPane");
+
+		if (!win) {
+			window.openDialog(
+				'chrome://zotero-wikidata/content/panes/itemsPane.xul',
+				'',
+				'chrome, titlebar, toolbar, centerscreen',
+			);
+		}
 	};
 
 	/**

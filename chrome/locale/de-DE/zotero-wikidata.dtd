@@ -1,8 +1,17 @@
 <!ENTITY zotero.wikidata.name "Zotero WikiData">
+<!ENTITY zotero.wikidata.title "WikiData Einträge">
+<!ENTITY zotero.wikidata.credentails "Benutzer Informationen">
 
-<!ENTITY zotero.wikidata.explanation1 "This window prepared all information you will need to create a WikiData entry.">
-<!ENTITY zotero.wikidata.explanation2 "Please be aware that this data may contain faults. Therefore double check what you are entering into WikiData.">
-<!ENTITY zotero.wikidata.general.close "Close">
+<!ENTITY zotero.wikidata.explanation1 "Dieses Fenster dient als Vorlage welches alle Informationen beinhaltet die in
+Zotero hinterlegt sind.">
+<!ENTITY zotero.wikidata.explanation2 "Bitte seien Sie sich bewusst das manche Informationen nicht richtig seien können.
+ Deswegen überprüfen sie nochmal die Einträge vor dem abspeichern in WikiData.">
+
+<!ENTITY zotero.wikidata.general.username "Benutzername">
+<!ENTITY zotero.wikidata.general.password "Password">
+<!ENTITY zotero.wikidata.general.save "Speichern">
+<!ENTITY zotero.wikidata.general.delete "Löschen">
+<!ENTITY zotero.wikidata.general.reload "Neu Laden">
 <!ENTITY zotero.wikidata.general.close "Schließen">
 
 <!ENTITY zotero.wikidata.items.title "Titel">

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="chrome://zotero-wikidata/skin/overlay.css" type="text/css"?>
 <?xml-stylesheet href="chrome://zotero/skin/overlay.css" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero-wikidata/skin/overlay.css" type="text/css"?>
 
 <!DOCTYPE window [
         <!ENTITY % globaldtd SYSTEM "chrome://zotero-wikidata/locale/zotero-wikidata.dtd"> %globaldtd;
@@ -30,7 +30,7 @@
                         <menupopup>
                             <menuseparator/>
                             <menuitem label="&zotero.wikidata.toolbar.config.setup.credentials;"
-                                      oncommand="window.openDialog('chrome://zotero-wikidata/content/configuration/credentials.xul');"/>
+                                      oncommand="window.openDialog('chrome://zotero-wikidata/content/views/credentials.xul');"/>
                         </menupopup>
                     </menu>
                 </menubar>
@@ -63,7 +63,9 @@
         <vbox>
             <hbox>
                 <spacer flex="1"/>
-                <button label="&zotero.wikidata.general.close;" oncommand="window.close();"/>
+                <button class="zotero-tb-button" label="&zotero.wikidata.general.reload;"
+                        oncommand="Zotero.WikiData.ItemsPane.refresh();"/>
+                <button class="zotero-tb-button" label="&zotero.wikidata.general.close;" oncommand="window.close();"/>
             </hbox>
         </vbox>
     </vbox>

@@ -24,6 +24,11 @@ Zotero.WikiData.ItemsPane = {
 		this._registerClickEventHandler();
 	},
 
+	refresh: async function() {
+		let treeview = await this._loadItems();
+		document.getElementById('zotero-wikidata-items-tree').view = treeview;
+	},
+
 	/**
 	 * Refreshes the list of locate engines in the locate pane
 	 * @param {String} name of locate engine to select
@@ -53,7 +58,7 @@ Zotero.WikiData.ItemsPane = {
 			let createManual = document.getElementById('view-item-information');
 			let createViaRest = document.getElementById('create-item-rest');
 
-			if (treeitem.wikiDataLink === "") {
+			if (treeitem && treeitem.wikiDataLink === "") {
 				let label = "whatever";
 				let description = "blalbalbla";
 				let aliases = "foo, bar";

@@ -3,23 +3,28 @@
     margin: 0 0 0.5em 0;
 }
 
-/** Startup view */
+/** Give every button a right and left margin */
+button {
+    margin-right: 0.1em;
+    margin-left: 0.1em;
+}
+
+/** View listing all items */
+#zotero-wikidata-items {
+    font-family: Lucida Grande, Lucida Sans Unicode, Lucida Sans, Geneva, -apple-system, sans-serif !important;
+    font-size: 14px !important;
+}
+
 #zotero-wikidata-items-tree {
     width: 640px;
     height: 480px;
 }
 
 #zotero-wikidata-items-tree > treecols > treecol {
-    font-family: Lucida Grande, Lucida Sans Unicode, Lucida Sans, Geneva, -apple-system, sans-serif !important;
-    font-size: 16px;
+    font-size: 16px !important;
 }
 
-#zotero-wikidata-items-children {
-    font-family: Lucida Grande, Lucida Sans Unicode, Lucida Sans, Geneva, -apple-system, sans-serif !important;
-    font-size: 14px !important;
-}
-
-/** Item listing container */
+/** View listing all information of an item */
 #zotero-wikidata-information {
     font-family: Lucida Grande, Lucida Sans Unicode, Lucida Sans, Geneva, -apple-system, sans-serif !important;
     font-size: 14px;

@@ -1,11 +1,18 @@
 <!ENTITY zotero.wikidata.name "Zotero WikiData">
-<!ENTITY zotero.wikidata.title "WikiData Entries">
+<!ENTITY zotero.wikidata.title "WikiData entries">
+<!ENTITY zotero.wikidata.credentails "User credentials">
 
 <!ENTITY zotero.wikidata.toolbar.config "Configuration">
 <!ENTITY zotero.wikidata.toolbar.config.setup.credentials "Setup Credentials">
 
 <!ENTITY zotero.wikidata.explanation1 "This window prepared all information you will need to create a WikiData entry.">
 <!ENTITY zotero.wikidata.explanation2 "Please be aware that this data may contain faults. Therefore double check what you are entering into WikiData.">
+
+<!ENTITY zotero.wikidata.general.username "Username">
+<!ENTITY zotero.wikidata.general.password "Password">
+<!ENTITY zotero.wikidata.general.save "Save">
+<!ENTITY zotero.wikidata.general.delete "Delete">
+<!ENTITY zotero.wikidata.general.reload "Reload">
 <!ENTITY zotero.wikidata.general.close "Close">
 
 <!ENTITY zotero.wikidata.items.title "Title">

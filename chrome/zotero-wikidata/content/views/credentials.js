@@ -6,15 +6,14 @@ Zotero.WikiData.Credentials = {
 
         let credentials = await this._loadCredentials();
 
-        Zotero.debug('username: ' + credentials.wikidata.username + " password: " + credentials.wikidata.password);
         if (credentials.wikidata && credentials.wikidata.username) {
             let usernameField = document.getElementById('zotero-wikidata-username');
-            usernameField.setAttribute('value', credentials.username);
+            usernameField.value = credentials.wikidata.username;
         }
 
         if (credentials.wikidata && credentials.wikidata.password) {
             let passwordField = document.getElementById('zotero-wikidata-password');
-            passwordField.setAttribute('value', credentials.password);
+            passwordField.value = credentials.wikidata.password;
         }
     },
 
@@ -24,7 +23,7 @@ Zotero.WikiData.Credentials = {
         }
 
         let content = await Zotero.File.getContentsAsync(this._credentialsFile);
-        if(content.length > 0) {
+        if (content.length > 0) {
             return JSON.parse(content);
         } else {
             return false;
@@ -42,28 +41,32 @@ Zotero.WikiData.Credentials = {
     saveCredentials: async function () {
         let credentials = await this._loadCredentials();
 
-        let username = this._username;
-        let password = this._password;
-
-        if (credentials) {
-            username = credentials.wikidata.username;
-            password = credentials.wikidata.password;
-
-            if (credentials.username !== this._username) {
-                username = this._username;
+        if (!credentials) {
+            credentials = {
+                wikidata: {
+                    username: this._username,
+                    password: this._password
+                }
+            };
+            return await this._writeToFile(credentials);
+        } else if (credentials && credentials.wikidata && credentials.wikidata.username && credentials.wikidata.password) {
+            if (credentials.wikidata.username !== document.getElementById('zotero-wikidata-username').value) {
+                credentials.wikidata.username = this._username;
             }
 
-            if (credentials.password !== this._password) {
-                password = this._password;
+            if (credentials.wikidata.password !== document.getElementById('zotero-wikidata-password').value) {
+                credentials.wikidata.password = this._password;
             }
+            return await this._writeToFile(credentials);
+        } else {
+            credentials = {
+                wikidata: {
+                    username: this._username,
+                    password: this._password
+                }
+            };
+            return await this._writeToFile(credentials);
         }
-
-        await this._writeToFile({
-            wikidata: {
-                username: username,
-                password: password
-            }
-        });
     },
 
     _writeToFile: async function (data) {
@@ -72,14 +75,17 @@ Zotero.WikiData.Credentials = {
         } catch (e) {
             Zotero.debug("Error writing to file : " + e);
         }
-    },
+    }
+
+    ,
 
     deleteCredentials: async function () {
+        let usernameField = document.getElementById('zotero-wikidata-username');
+        usernameField.value = "";
+        let passwordField = document.getElementById('zotero-wikidata-password');
+        passwordField.value = "";
+
         let credentials = await this._loadCredentials();
-
-        document.getElementById('zotero-wikidata-username').setAttribute('value', "")
-        document.getElementById('zotero-wikidata-password').setAttribute('value', "");
-
         if (!credentials) {
             return;
         }

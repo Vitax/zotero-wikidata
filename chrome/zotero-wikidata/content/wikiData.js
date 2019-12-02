@@ -10,7 +10,7 @@ Zotero.WikiData = new function () {
 
 		if (!win) {
 			window.openDialog(
-				'chrome://zotero-wikidata/content/panes/itemsPane.xul',
+				'chrome://zotero-wikidata/content/views/itemsPane.xul',
 				'',
 				'chrome, titlebar, toolbar, centerscreen',
 			);

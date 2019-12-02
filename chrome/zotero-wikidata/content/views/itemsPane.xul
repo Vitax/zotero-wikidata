@@ -16,11 +16,11 @@
 
     <script src="chrome://zotero/content/include.js"/>
 
-    <script src="./itemMenu.js" type="application/javascript"/>
-    <script src="./itemsPane.js" type="application/javascript"/>
+    <script src="chrome://zotero-wikidata/content/views/credentials.js" type="application/javascript"/>
+    <script src="chrome://zotero-wikidata/content/views/itemsPane.js" type="application/javascript"/>
     <script src="chrome://zotero-wikidata/content/wikidata/sparql.js" type="application/javascript"/>
     <script src="chrome://zotero-wikidata/content/wikidata/translations.js" type="application/javascript"/>
-    <script src="chrome://zotero-wikidata/content/wikidata/wikiDataEntry.js" type="application/javascript"/>
+    <script src="chrome://zotero-wikidata/content/wikidata/wikiDataServices.js" type="application/javascript"/>
 
     <vbox flex="1">
         <vbox>

@@ -2,9 +2,11 @@ Components.utils.import("resource://gre/modules/osfile.jsm");
 
 Zotero.WikiData.Credentials = {
     init: async function () {
-        this._credentialsFile = OS.Path.join(OS.Constants.Path.profileDir, "credentials.json");
+        let credentials = await this.loadCredentials();
 
-        let credentials = await this._loadCredentials();
+        if (!credentials) {
+            return;
+        }
 
         if (credentials.wikidata && credentials.wikidata.username) {
             let usernameField = document.getElementById('zotero-wikidata-username');
@@ -17,12 +19,15 @@ Zotero.WikiData.Credentials = {
         }
     },
 
-    _loadCredentials: async function () {
-        if (!await OS.File.exists(this._credentialsFile)) {
+    loadCredentials: async function () {
+        Components.utils.import("resource://gre/modules/osfile.jsm");
+        let _credentialsFile = OS.Path.join(OS.Constants.Path.profileDir, "credentials.json");
+
+        if (!await OS.File.exists(_credentialsFile)) {
             return false;
         }
 
-        let content = await Zotero.File.getContentsAsync(this._credentialsFile);
+        let content = await Zotero.File.getContentsAsync(_credentialsFile);
         if (content.length > 0) {
             return JSON.parse(content);
         } else {
@@ -30,16 +35,38 @@ Zotero.WikiData.Credentials = {
         }
     },
 
+    /**
+     * Handle change event of the username textbox
+     * @param event { Event<HTMLElement>}
+     */
     setUsername: function (event) {
         this._username = event.target.value;
     },
 
+    /**
+     * Handle change event of the password textbox
+     * @param event { Event<HTMLElement>}
+     */
     setPassword: function (event) {
         this._password = event.target.value;
     },
 
+    /**
+     * Toggle visibility of password
+     */
+    toggleVisiblePassword: function () {
+        let showPasswordButton = document.getElementById('zotero-wikidata-password');
+
+        if (showPasswordButton.getAttribute('type') === 'password') {
+            showPasswordButton.setAttribute('type', 'text');
+        } else {
+            showPasswordButton.setAttribute('type', 'password');
+        }
+    }
+    ,
+
     saveCredentials: async function () {
-        let credentials = await this._loadCredentials();
+        let credentials = await this.loadCredentials();
 
         if (!credentials) {
             credentials = {
@@ -67,16 +94,17 @@ Zotero.WikiData.Credentials = {
             };
             return await this._writeToFile(credentials);
         }
-    },
+    }
+    ,
 
     _writeToFile: async function (data) {
+        Components.utils.import("resource://gre/modules/osfile.jsm");
         try {
-            await Zotero.File.putContentsAsync(this._credentialsFile, JSON.stringify(data));
+            await Zotero.File.putContentsAsync(_credentialsFile, JSON.stringify(data));
         } catch (e) {
             Zotero.debug("Error writing to file : " + e);
         }
     }
-
     ,
 
     deleteCredentials: async function () {
@@ -85,7 +113,7 @@ Zotero.WikiData.Credentials = {
         let passwordField = document.getElementById('zotero-wikidata-password');
         passwordField.value = "";
 
-        let credentials = await this._loadCredentials();
+        let credentials = await this.loadCredentials();
         if (!credentials) {
             return;
         }
@@ -94,4 +122,5 @@ Zotero.WikiData.Credentials = {
 
         await this._writeToFile(credentials);
     }
-};
+}
+;

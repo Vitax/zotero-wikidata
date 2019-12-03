@@ -1,3 +1,5 @@
+const wikibase = require("wikibase-edit");
+
 Zotero.WikiData.Services = new function () {
     /**
      *
@@ -59,10 +61,10 @@ Zotero.WikiData.Services = new function () {
             return;
         }
 
-        const wikibaseEdit = require("wikibase-edit")(wikibaseConfig);
+        wikibase(wikibaseConfig);
 
         try {
-            await wikibaseEdit.create({
+            await wikibase.entity.create({
                 type: "item",
                 labels: data.labels,
                 descriptions: data.descriptions,

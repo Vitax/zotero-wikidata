@@ -1,8 +1,11 @@
-content	zotero-wikidata					    chrome/zotero-wikidata/content/
-skin	zotero-wikidata	default				chrome/skin/
+content	    zotero-wikidata					        chrome/zotero-wikidata/content/
+content	    zotero-wikidata-lib					    chrome/zotero-wikidata/lib/
+content	    zotero-wikidata-bundles					chrome/zotero-wikidata/bundles/
 
-overlay	chrome://zotero/content/zoteroPane.xul chrome://zotero-wikidata/content/overlay.xul
+skin	    zotero-wikidata	default				    chrome/skin/
 
-locale  zotero-wikidata en-US               chrome/locale/en-US/
-locale  zotero-wikidata de-DE               chrome/locale/de-DE/
+overlay	    chrome://zotero/content/zoteroPane.xul  chrome://zotero-wikidata/content/overlay.xul
+
+locale      zotero-wikidata en-US                   chrome/locale/en-US/
+locale      zotero-wikidata de-DE                   chrome/locale/de-DE/
 

@@ -14,7 +14,7 @@
 
     <script src="chrome://zotero/content/include.js"/>
     <script src="chrome://zotero-wikidata/content/itemPrefab/itemPrefab.js" type="application/javascript"/>
-    <script src="chrome://zotero-wikidata/content/wikidata/translations.js" type="application/javascript"/>
+    <script src="chrome://zotero-wikidata-lib/content/translations.js" type="application/javascript"/>
 
     <vbox flex="1">
         <vbox>

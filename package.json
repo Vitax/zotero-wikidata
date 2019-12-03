@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "bundle": "webpack"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,12 @@
   "homepage": "https://github.com/Vitax/zotero-wikidata#readme",
   "dependencies": {
     "wikibase-edit": "^3.2.14"
+  },
+  "devDependencies": {
+    "fs": "0.0.1-security",
+    "net": "^1.0.2",
+    "tls": "0.0.1",
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9"
   }
 }

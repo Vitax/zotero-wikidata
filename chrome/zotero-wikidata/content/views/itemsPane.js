@@ -16,7 +16,7 @@ Zotero.WikiData.ItemsPane = {
     },
 
     init: async function () {
-        this._ZoteroWikiDataIntl = new Zotero.WikiData.Intl();
+        this._translations = new Zotero.WikiData.Intl();
         this.queryDispatcher = new Zotero.WikiData.SPARQLQueryDispatcher("https://query.wikidata.org/sparql");
 
         let treeview = await this._loadItems();
@@ -341,11 +341,11 @@ Zotero.WikiData.ItemsPane = {
         }
 
         if (item.itemTypeID === Zotero.ItemTypes.getID('journalArticle')) {
-            return this._ZoteroWikiDataIntl.getString('zotero.wikidata.items.type.article') + item.date;
+            return this._translations.getString('zotero.wikidata.items.type.article') + item.date;
         }
 
         if (item.itemTypeID === Zotero.ItemTypes.getID('book')) {
-            return this._ZoteroWikiDataIntl.getString('zotero.wikidata.items.type.book') + item.date;
+            return this._translations.getString('zotero.wikidata.items.type.book') + item.date;
         }
 
         return "Item released on " + item.date;

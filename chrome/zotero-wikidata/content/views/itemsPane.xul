@@ -19,7 +19,7 @@
     <script src="chrome://zotero-wikidata/content/views/itemsPane.js" type="application/javascript"/>
     <script src="chrome://zotero-wikidata-lib/content/sparql.js" type="application/javascript"/>
     <script src="chrome://zotero-wikidata-lib/content/translations.js" type="application/javascript"/>
-    <script src="chrome://zotero-wikidata-bundles/content/wikiDataServices.js" type="application/javascript"/>
+    <script src="chrome://zotero-wikidata-bundles/content/wikiDataService.js" type="application/javascript"/>
 
     <vbox flex="1">
         <vbox>

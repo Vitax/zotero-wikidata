@@ -6,6 +6,7 @@ RELEASE:=$(shell grep em:version install.rdf | head -n 1 | sed -e 's/ *<em:versi
 
 zotero-wikidata.xpi: FORCE
 	rm -rf $@
+	npm run bundle
 	zip -r $@ chrome chrome.manifest defaults install.rdf -x \*.DS_Store
 
 zotero-wikidata-%.xpi: zotero-wikidata.xpi

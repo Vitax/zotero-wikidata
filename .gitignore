@@ -1,4 +1,6 @@
 *.xpi
 .DS_Store
 
+chrome/zotero-wikidata/bundles
+
 node_modules

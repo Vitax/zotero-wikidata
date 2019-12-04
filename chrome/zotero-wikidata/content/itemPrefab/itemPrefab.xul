@@ -70,6 +70,10 @@
 
             <groupbox flex="1">
                 <hbox>
+                    <label value="&zotero.wikidata.items.publication_date;"/>
+                    <textbox id="item-date" flex="1"/>
+                </hbox>
+                <hbox>
                     <label value="&zotero.wikidata.items.language;"/>
                     <textbox id="item-language" flex="1"/>
                 </hbox>

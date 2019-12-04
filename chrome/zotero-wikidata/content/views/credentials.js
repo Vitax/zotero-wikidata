@@ -99,6 +99,9 @@ Zotero.WikiData.Credentials = {
 
     _writeToFile: async function (data) {
         Components.utils.import("resource://gre/modules/osfile.jsm");
+
+        let _credentialsFile = OS.Path.join(OS.Constants.Path.profileDir, "credentials.json");
+
         try {
             await Zotero.File.putContentsAsync(_credentialsFile, JSON.stringify(data));
         } catch (e) {

@@ -30,6 +30,7 @@
 <!ENTITY zotero.wikidata.items.pages "Pages">
 <!ENTITY zotero.wikidata.items.volume "Volume">
 <!ENTITY zotero.wikidata.items.issue "Issue">
+<!ENTITY zotero.wikidata.items.publication_date "Publication Date">
 <!ENTITY zotero.wikidata.items.language "Language">
 
 <!ENTITY zotero.wikidata.view.information "View Information">

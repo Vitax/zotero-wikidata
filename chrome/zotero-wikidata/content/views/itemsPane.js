@@ -16,6 +16,7 @@ Zotero.WikiData.ItemsPane = {
     },
 
     init: async function () {
+        WikiDataService = new Zotero.WikiData.Service();
         this._translations = new Zotero.WikiData.Intl();
         this.queryDispatcher = new Zotero.WikiData.SPARQLQueryDispatcher("https://query.wikidata.org/sparql");
 
@@ -25,8 +26,7 @@ Zotero.WikiData.ItemsPane = {
     },
 
     refresh: async function () {
-        let treeview = await this._loadItems();
-        document.getElementById('zotero-wikidata-items-tree').view = treeview;
+        await this.init()
     },
 
     /**
@@ -64,7 +64,7 @@ Zotero.WikiData.ItemsPane = {
                 createManual.setAttribute('disabled', 'false');
 
                 createManual.setAttribute('oncommand',
-                    'Zotero.WikiData.Services.openItemInformationWindow(' + JSON.stringify(treeitem) + ')');
+                    'WikiDataService.openItemInformationWindow(' + JSON.stringify(treeitem) + ')');
             } else {
                 createManual.setAttribute('disabled', 'true');
             }
@@ -87,7 +87,7 @@ Zotero.WikiData.ItemsPane = {
                 createViaRest.setAttribute('disabled', 'false');
 
                 createViaRest.setAttribute('oncommand',
-                    'Zotero.WikiData.Services.createNewEntry(' + JSON.stringify(data) + ')');
+                    'WikiDataService.createNewEntry(' + JSON.stringify(data) + ')');
             } else {
                 createViaRest.setAttribute('disabled', 'true');
             }
@@ -95,7 +95,7 @@ Zotero.WikiData.ItemsPane = {
 
         // Open up the WikiData entry in the local browser with a double click
         if (event && event.button == 0 && event.detail == 2) {
-            this.openUpLink(treeitem);
+            this.openLink(treeitem);
         }
     },
 
@@ -182,17 +182,13 @@ Zotero.WikiData.ItemsPane = {
         };
     }),
 
-    _handleRightClick: function (item, clientX, clientY) {
-        Zotero.debug(JSON.stringify(item));
-    },
-
     /**
      * Opens up a browser with injected javascript to automatically fill in fields for WikiData
      * Should receive a index which will help loading the right items from the tree list
      *
      * @param index { number }
      */
-    openUpLink: function (item) {
+    openLink: function (item) {
         if (item.wikiDataLink) {
             Zotero.WikiData.openInBrowser(item.wikiDataLink);
         }
@@ -290,14 +286,12 @@ Zotero.WikiData.ItemsPane = {
 
         claims.P407 = item.getField('language') ? item.getField('language') : 'en';
 
-        Zotero.debug(JSON.stringify(claims));
-
         if (Zotero.Retractions.isRetracted(item)) {
             Zotero.Retractions.getData(item);
         }
 
         if (item.getField('DOI')) {
-            claims.P356 = item.getField('DOI')
+            claims.P356 = item.getField('DOI').toUpperCase();
         }
 
         if (item.getField('PMID')) {
@@ -325,12 +319,14 @@ Zotero.WikiData.ItemsPane = {
         }
 
         if (item.getField('volume')) {
-            claims.P478 = item.getfield('volume');
+            claims.P478 = item.getField('volume');
         }
 
         if (item.getField('issue')) {
             claims.P443 = item.getField('issue');
         }
+
+        Zotero.debug(JSON.stringify(claims));
 
         return claims;
     },
@@ -364,7 +360,7 @@ Zotero.WikiData.ItemsPane = {
 
         if (tags && tags.length > 0) {
             for (let i = 0; i < 5; i++) {
-                aliases = aliases.push(tags[i].tag);
+                aliases.push(tags[i].tag);
             }
             return aliases;
         } else {

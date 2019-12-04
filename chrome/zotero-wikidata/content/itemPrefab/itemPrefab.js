@@ -28,6 +28,7 @@ Zotero.WikiData.ItemPrefab = {
 
 		this._setAuthors(item);
 
+		this._setDate(item);
 		this._setPages(item);
 		this._setVolume(item);
 		this._setIssue(item);
@@ -138,6 +139,11 @@ Zotero.WikiData.ItemPrefab = {
 
 			authorsContainer.appendChild(div);
 		}
+	},
+
+	_setPages: function (item) {
+		let dateField = document.getElementById('item-date');
+		dateField.value = item.date;
 	},
 
 	_setPages: function (item) {

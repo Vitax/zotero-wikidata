@@ -123,10 +123,9 @@ Zotero.WikiData.ItemsPane = {
         for (let item of items) {
             item.wikiDataEntry = "None";
             item.wikiDataLink = "";
-            let queryString = "";
 
             if (item.getField("DOI")) {
-                queryString = `SELECT ?item WHERE { ?item ?doi "${item.getField("DOI").toUpperCase()}".}`;
+                let queryString = `SELECT ?item WHERE { ?item ?doi "${item.getField("DOI").toUpperCase()}".}`;
 
                 promises.push(this.queryDispatcher.queryEntry(queryString)
                     .then(result => {

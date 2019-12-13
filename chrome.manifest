@@ -1,6 +1,7 @@
 content	    zotero-wikidata					        chrome/zotero-wikidata/content/
 content	    zotero-wikidata-lib					    chrome/zotero-wikidata/lib/
-content	    zotero-wikidata-bundles					chrome/zotero-wikidata/bundles/
+
+resource    zotero-wikidata                         resource/
 
 skin	    zotero-wikidata	default				    chrome/skin/
 

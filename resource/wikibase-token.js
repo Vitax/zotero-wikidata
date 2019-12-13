@@ -1,3 +1,3 @@
-const wikibaseToken = require("./wikibase-token/wikibase-token.js");
+const wikibaseToken = require("resource://zotero-wikidata/wikibase-token/wikibase-token");
 
 module.export = wikibaseToken;

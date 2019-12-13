@@ -14,9 +14,9 @@
 
 'use strict'
 
-var extend = require('extend')
-var cookies = require('./lib/cookies')
-var helpers = require('./lib/helpers')
+var extend = require('resource://zotero-wikidata/extend')
+var cookies = require('./cookies')
+var helpers = require('./helpers')
 
 var paramsHaveRequestBody = helpers.paramsHaveRequestBody
 

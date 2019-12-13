@@ -1,4 +1,4 @@
 
-const bluereq = require("./bluereq/bluereq");
+const bluereq = require("resource://zotero-wikidata/bluereq/bluereq");
 
 module.export = bluereq;

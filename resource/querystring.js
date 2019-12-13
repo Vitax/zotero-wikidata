@@ -1,4 +1,4 @@
 
-const queryString = require("./querystring/index");
+const queryString = require("resource://zotero-wikidata/querystring/index");
 
 module.export = queryString;

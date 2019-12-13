@@ -1,4 +1,4 @@
 
-var wikibaseEdit = require("./wikibase-edit/index.js");
+var wikibaseEdit = require("resource://zotero-wikidata/wikibase-edit/index.js");
 
 moduel.export = wikibaseEdit;

@@ -1,4 +1,4 @@
-const breq = require('bluereq')
+const breq = require('resource://zotero-wikidata/bluereq')
 const error_ = require('./error')
 const propertiesByInstance = {}
 

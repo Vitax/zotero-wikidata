@@ -1,6 +1,6 @@
-const request = require('request')
-const BluePromise = require('bluebird')
-const pick = require('lodash.pick')
+const request = require('resource://zotero-wikidata/request')
+const BluePromise = require('resource://zotero-wikidata/bluebird')
+const pick = require('resource://zotero-wikidata/lodash-pick')
 // attributes to keep from a response object with statusCode >= 400
 const errorAttributes = [
   'statusCode',

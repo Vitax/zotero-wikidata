@@ -1,3 +1,3 @@
-const WBK = require("./wikibase-sdk/wikibase-sdk");
+const WBK = require("resource://zotero-wikidata/wikibase-sdk/wikibase-sdk");
 
 module.export = WBK;

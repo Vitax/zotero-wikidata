@@ -21,7 +21,7 @@
 
 'use strict';
 
-var punycode = require('punycode');
+var punycode = require('./punycode');
 var util = require('./util');
 
 exports.parse = urlParse;
@@ -97,7 +97,7 @@ var protocolPattern = /^([a-z0-9.+-]+:)/i,
       'gopher:': true,
       'file:': true
     },
-    querystring = require('querystring');
+    querystring = require('resource://zotero-wikidata/querystring');
 
 function urlParse(url, parseQueryString, slashesDenoteHost) {
   if (url && util.isObject(url) && url instanceof Url) return url;

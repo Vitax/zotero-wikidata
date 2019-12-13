@@ -1,6 +1,6 @@
 'use strict'
 
-var tough = require('tough-cookie')
+var tough = require('resource://zotero-wikidata/tough-cookie')
 
 var Cookie = tough.Cookie
 var CookieJar = tough.CookieJar

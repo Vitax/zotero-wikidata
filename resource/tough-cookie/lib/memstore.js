@@ -32,13 +32,13 @@
 var Store = require('./store').Store;
 var permuteDomain = require('./permuteDomain').permuteDomain;
 var pathMatch = require('./pathMatch').pathMatch;
-var utilInherits = require('resource://zotero-wikidata/util-inherits');
+var util = require('resource://zotero-wikidata/util');
 
 function MemoryCookieStore() {
   Store.call(this);
   this.idx = {};
 }
-new utilInherits(MemoryCookieStore, Store);
+util.inherits(MemoryCookieStore, Store);
 exports.MemoryCookieStore = MemoryCookieStore;
 MemoryCookieStore.prototype.idx = null;
 

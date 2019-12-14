@@ -1,3 +1,3 @@
-const toughCookie = require("resource://zotero-wikidata/tough-cookie/cookie")
+const toughCookie = require("resource://zotero-wikidata/tough-cookie/lib/cookie")
 
 module.export = toughCookie;

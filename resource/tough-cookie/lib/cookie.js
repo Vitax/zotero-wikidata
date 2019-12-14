@@ -36,10 +36,11 @@ var pubsuffix = require('./pubsuffix-psl');
 var Store = require('./store').Store;
 var MemoryCookieStore = require('./memstore').MemoryCookieStore;
 var pathMatch = require('./pathMatch').pathMatch;
+var VERSION = require('../package.json').version;
 
 var punycode;
 try {
-  punycode = require('./punycode');
+  punycode = require('../node_modules/punycode/punycode');
 } catch(e) {
   console.warn("tough-cookie: can't load punycode; won't use punycode for domain normalization");
 }
@@ -1251,7 +1252,7 @@ CookieJar.prototype.serialize = function(cb) {
     // The version of tough-cookie that serialized this jar. Generally a good
     // practice since future versions can make data import decisions based on
     // known past behavior. When/if this matters, use `semver`.
-    version: 'tough-cookie@',
+    version: 'tough-cookie@'+VERSION,
 
     // add the store type, to make humans happy:
     storeType: type,

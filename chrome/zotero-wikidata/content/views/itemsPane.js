@@ -42,6 +42,8 @@ Zotero.WikiData.ItemsPane = new function () {
 
     this._treeClick = async function (event) {
         let t = event.originalTarget;
+        let createViaRest = document.getElementById('create-item-rest');
+        createViaRest.setAttribute('disabled', 'true');
 
         // Check if you are in the treechildren container
         if (t.localName != 'treechildren') {
@@ -88,7 +90,7 @@ Zotero.WikiData.ItemsPane = new function () {
             //     createViaRest.setAttribute('oncommand',
             //         'Zotero.WikiData.Service.createNewEntry(' + JSON.stringify(data) + ')');
             // } else {
-            createViaRest.setAttribute('disabled', 'true');
+            //     createViaRest.setAttribute('disabled', 'true');
             // }
         }
 

@@ -2,10 +2,12 @@
 <!ENTITY zotero.wikidata.title "WikiData Einträge">
 <!ENTITY zotero.wikidata.credentails "Benutzer Informationen">
 
-<!ENTITY zotero.wikidata.explanation1 "Dieses Fenster dient als Vorlage welches alle Informationen beinhaltet die in
-Zotero hinterlegt sind.">
-<!ENTITY zotero.wikidata.explanation2 "Bitte seien Sie sich bewusst das manche Informationen nicht richtig seien können.
- Deswegen überprüfen sie nochmal die Einträge vor dem abspeichern in WikiData.">
+<!ENTITY zotero.wikidata.toolbar.config "Konfiguration">
+<!ENTITY zotero.wikidata.toolbar.config.setup.credentials "Benutzerinformationen verwalten">
+
+<!ENTITY zotero.wikidata.explanation1 "Dieses Fenster wurde mit allen informationen die in Zotero vorhanden sind ausgefüllt.">
+<!ENTITY zotero.wikidata.explanation2 "Bitte seien Sie sich bewusst das manche Informationen nicht richtig seien können.">
+<!ENTITY zotero.wikidata.explanation3 "Deswegen überprüfen sie nochmal die Einträge vor dem abspeichern in WikiData.">
 
 <!ENTITY zotero.wikidata.general.username "Benutzername">
 <!ENTITY zotero.wikidata.general.password "Password">
@@ -33,11 +35,10 @@ Zotero hinterlegt sind.">
 <!ENTITY zotero.wikidata.items.pages "Pages">
 <!ENTITY zotero.wikidata.items.volume "Volume">
 <!ENTITY zotero.wikidata.items.issue "Issue">
+<!ENTITY zotero.wikidata.items.publication_date "Publication Date">
 <!ENTITY zotero.wikidata.items.language "Language">
-
 
 <!ENTITY zotero.wikidata.view.information "Informationen einsehen">
 
 <!ENTITY zotero.wikidata.create.manual "Manuel erstellen">
 <!ENTITY zotero.wikidata.create.rest "Über REST erstellen">
-

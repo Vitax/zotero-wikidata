@@ -1,9 +1,9 @@
 content	    zotero-wikidata					        chrome/zotero-wikidata/content/
 content	    zotero-wikidata-lib					    chrome/zotero-wikidata/lib/
 
-resource    zotero-wikidata                         resource/
-
 skin	    zotero-wikidata	default				    chrome/skin/
+
+resource    zotero-wikidata         				resource/
 
 overlay	    chrome://zotero/content/zoteroPane.xul  chrome://zotero-wikidata/content/overlay.xul
 

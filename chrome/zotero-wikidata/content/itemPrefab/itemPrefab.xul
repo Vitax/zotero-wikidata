@@ -19,8 +19,9 @@
     <vbox flex="1">
         <vbox>
             <groupbox>
-                <description value="&zotero.wikidata.explanation1;"/>
-                <description value="&zotero.wikidata.explanation2;"/>
+                <description id="wikidata-hint" value="&zotero.wikidata.explanation1;"/>
+                <description id="wikidata-hint" value="&zotero.wikidata.explanation2;"/>
+                <description id="wikidata-hint" value="&zotero.wikidata.explanation3;"/>
             </groupbox>
         </vbox>
         <vbox id="zotero-wikidata-item-content" flex="1">

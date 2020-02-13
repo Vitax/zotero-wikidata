@@ -170,5 +170,4 @@ Zotero.WikiData.ItemPrefab = {
 		let languageField = document.getElementById('item-language');
 		languageField.value = item.language;
 	}
-
 };

@@ -1,4 +1,4 @@
-const wikibase = require('resource://zotero-wikidata/wikibase-edit');
+// import wikibase from 'wikibase-edit'
 
 /**
  *
@@ -63,7 +63,6 @@ Zotero.WikiData.Service = new function () {
             let aliases = data.aliases;
             let sitelinks = {};
 
-            Zotero.debug('create entity: ' + JSON.stringify(data));
             let wbEdit = wikibase(config);
 
             await wbEdit.entity.create({
@@ -115,21 +114,4 @@ Zotero.WikiData.Service = new function () {
     this._retractionNotice = function (xmlDocument) {
         let instanceOfList = Zotero.Utilities.xpatch(xmlDocument, '//div[@id=" + this._wikiDataClassifiers.instance_of + "]');
     };
-
-    this.WikiDataClassifiers = {
-        instanceOf: "P31",
-        title: "P1476",
-        author: "P2093",
-        languageOfWork: "P407",
-        publicationDate: "P577",
-        publishedIn: "P1433",
-        volume: "P478",
-        pages: "P304",
-        issue: "P433",
-        isRetractedBy: "P5824",
-        pubmedID: "P698",
-        doi: "P356",
-        openCitation: "P3181"
-    };
-
 };

@@ -54,9 +54,11 @@
             </hbox>
             <menupopup id="item-options">
                 <menuitem id="view-item-information"
-                          label="&zotero.wikidata.create.manual;"/>
+                          tooltip="&zotero.wikidata.create.template.tooltip;"
+                          label="&zotero.wikidata.create.template;"/>
                 <menuitem id="create-item-rest"
-                          label="&zotero.wikidata.create.rest;"/>
+                          tooltip="&zotero.wikidata.create.api.tooltip;"
+                          label="&zotero.wikidata.create.api;"/>
             </menupopup>
         </vbox>
         <vbox>

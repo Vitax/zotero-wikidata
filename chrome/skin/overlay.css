@@ -54,3 +54,8 @@ button {
     min-width: 120px;
     padding-top: 0.75em !important;
 }
+
+/** description hint color */
+#wikidata-hint {
+    color: lightcoral;
+}
